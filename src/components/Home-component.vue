@@ -1,75 +1,73 @@
 <template>
-  <div class="dashboard">
-    <nav>
+  <div class="home">
+    <div class="nav-links">
       <ul class="list-unstyled">
         <li>
-          <router-link to="/" class="nav-link active-link">Accueil</router-link>
+          <router-link to="/acceuil" class="nav-link active-link">Accueil</router-link>
         </li>
-        <li>
+        <li class="dropdown">
           <button class="btn btn-link expand-btn" @click="toggleSubMenu('client')">
             <span>{{ isSubMenuExpanded('client') ? '-' : '+' }}</span> Clients
           </button>
-          <ul class="sub-menu" :class="{ 'expanded': isSubMenuExpanded('client') }">
+          <ul class="sub-menu" v-show="isSubMenuExpanded('client')">
             <li><router-link to="/clients" class="nav-link active-link">Liste des Clients</router-link></li>
             <li><router-link to="/clients/add" class="nav-link active-link">Ajouter un Client</router-link></li>
           </ul>
         </li>
-        <li>
+        <li class="dropdown">
           <button class="btn btn-link expand-btn" @click="toggleSubMenu('article')">
             <span>{{ isSubMenuExpanded('article') ? '-' : '+' }}</span> Articles
           </button>
-          <ul class="sub-menu" :class="{ 'expanded': isSubMenuExpanded('article') }">
+          <ul class="sub-menu" v-show="isSubMenuExpanded('article')">
             <li><router-link to="/articles" class="nav-link active-link">Liste des Articles</router-link></li>
             <li><router-link to="/articles/add" class="nav-link active-link">Ajouter un Article</router-link></li>
           </ul>
         </li>
-        <li>
+        <li class="dropdown">
           <button class="btn btn-link expand-btn" @click="toggleSubMenu('categorie')">
             <span>{{ isSubMenuExpanded('categorie') ? '-' : '+' }}</span> Catégories
           </button>
-          <ul class="sub-menu" :class="{ 'expanded': isSubMenuExpanded('categorie') }">
+          <ul class="sub-menu" v-show="isSubMenuExpanded('categorie')">
             <li><router-link to="/categories" class="nav-link active-link">Liste des Catégories</router-link></li>
             <li><router-link to="/categories/add" class="nav-link active-link">Ajouter une Catégorie</router-link></li>
           </ul>
         </li>
-        <li>
+        <li class="dropdown">
           <button class="btn btn-link expand-btn" @click="toggleSubMenu('commande')">
             <span>{{ isSubMenuExpanded('commande') ? '-' : '+' }}</span> Commandes
           </button>
-          <ul class="sub-menu" :class="{ 'expanded': isSubMenuExpanded('commande') }">
+          <ul class="sub-menu" v-show="isSubMenuExpanded('commande')">
             <li><router-link to="/commandes" class="nav-link active-link">Liste des Commandes</router-link></li>
             <li><router-link to="/commandes/add" class="nav-link active-link">Ajouter une Commande</router-link></li>
           </ul>
         </li>
-        <li>
+        <li class="dropdown">
           <button class="btn btn-link expand-btn" @click="toggleSubMenu('admin')">
             <span>{{ isSubMenuExpanded('admin') ? '-' : '+' }}</span> Administrateurs
           </button>
-          <ul class="sub-menu" :class="{ 'expanded': isSubMenuExpanded('admin') }">
+          <ul class="sub-menu" v-show="isSubMenuExpanded('admin')">
             <li><router-link to="/admins" class="nav-link active-link">Liste des Administrateurs</router-link></li>
             <li><router-link to="/admins/add" class="nav-link active-link">Ajouter un Administrateur</router-link></li>
           </ul>
         </li>
-        <li>
+        <li class="dropdown">
           <button class="btn btn-link expand-btn" @click="toggleSubMenu('vente')">
             <span>{{ isSubMenuExpanded('vente') ? '-' : '+' }}</span> Ventes
           </button>
-          <ul class="sub-menu" :class="{ 'expanded': isSubMenuExpanded('vente') }">
+          <ul class="sub-menu" v-show="isSubMenuExpanded('vente')">
             <li><router-link to="/ventes" class="nav-link active-link">Liste des Ventes</router-link></li>
             <li><router-link to="/ventes/add" class="nav-link active-link">Ajouter une Vente</router-link></li>
           </ul>
         </li>
-        <!-- Bouton de déconnexion -->
-       
       </ul>
-    </nav>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
-  name: 'Dashboard',
+  name: 'Home',
   data() {
     return {
       expandedMenu: null
@@ -81,33 +79,56 @@ export default {
     },
     isSubMenuExpanded(menuName) {
       return this.expandedMenu === menuName;
-    },
-   
+    }
   }
 };
 </script>
 
 <style scoped>
-.dashboard {
-  position: fixed;
-  top: 60px;
-  left: 0;
-  bottom: 0;
-  width: 220px;
-  background-color: #c6ccd1;
+.home {
+  max-width: 800px;
+  margin: 0 auto;
   padding: 20px;
-  box-sizing: border-box;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-family: 'Orbitron', sans-serif;
-  border-right: 1px solid #817070;
+  color: rgb(60, 67, 67);
+}
+
+.nav-links {
+  width: 100%;
+}
+
+.nav-links ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.nav-links ul li {
+  margin: 10px 0;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: rgb(60, 67, 67);
+}
+
+.nav-link:hover, .active-link {
+  font-weight: bold;
+  color: #51606c;
+}
+
+.dropdown {
+  position: relative;
 }
 
 .expand-btn {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
   color: #241c1c;
-  text-align: left;
+  background: none;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .expand-btn:hover {
@@ -115,33 +136,24 @@ export default {
 }
 
 .sub-menu {
-  display: none;
-  padding-left: 10px;
-  transition: max-height 0.3s ease;
-  max-height: 0;
-  overflow: hidden;
+  list-style-type: none;
+  padding: 0;
+  margin: 5px 0 0 20px;
 }
 
-.sub-menu.expanded {
-  display: block;
-  max-height: 200px;
+.sub-menu li {
+  text-align: left;
 }
 
-.nav-link {
-  display: block;
-  padding: 5px 0;
-  color: #fff;
+.sub-menu li a {
   text-decoration: none;
+  display: block;
+  padding: 10px;
+  color: #333;
+  transition: background-color 0.3s;
 }
 
-.nav-link:hover {
-  color: #6d4040;
+.sub-menu li a:hover {
+  background-color: #ddd;
 }
-
-.active-link {
-  font-weight: bold;
-  color: #51606c;
-}
-
-
 </style>

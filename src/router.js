@@ -12,14 +12,20 @@ import ListAdmin from './views/admin/ListAdmin-view.vue';
 import AddAdmin from './views/admin/AddAdmin-view.vue';
 import ListVente from './views/vente/ListVente-view.vue';
 import AddVente from './views/vente/AddVente-view.vue'; 
-import Dashboard from './components/dashboard-component.vue';
-
+import Home from './components/Home-component.vue';
+import WelcoMemessage from './views/Acceuil/Acceuil-view.vue'
 const routes = [
   {
     path: '/',
-    name: 'Dashboard',
-    component: Dashboard
+    name: 'Home',
+    component: Home
   },
+  {
+    path: '/acceuil',
+    name: 'WelcoMemessage',
+    component: WelcoMemessage
+  },
+
   {
     path: '/clients',
     name: 'ListClient',

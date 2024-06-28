@@ -2,7 +2,7 @@
   <div id="app">
     <AppHeader />
     <div class="main-content">
-      <Dashboard />
+      <Home />
       <div class="content">
         <router-view />
       </div>
@@ -14,14 +14,14 @@
 <script>
 import AppFooter from './components/Footer-component.vue';
 import AppHeader from './components/Header-component.vue';
-import Dashboard from './components/dashboard-component.vue';
+import Home from './components/Home-component.vue'; 
 
 export default {
   name: 'App',
   components: {
     AppFooter,
     AppHeader,
-    Dashboard
+    Home
   }
 };
 </script>
@@ -49,7 +49,7 @@ export default {
 .content {
   flex-grow: 1;
   padding: 20px;
-  margin-left: 230px; /* Espacement à gauche pour le dashboard */
+  margin-left: 230px; /* Espacement à gauche pour le contenu principal */
   background-color: #f5f5f5; /* Couleur de fond claire pour le contenu */
   border-radius: 10px;
 }
