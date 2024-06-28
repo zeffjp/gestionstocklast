@@ -1,18 +1,17 @@
 <template>
   <div class="add-categorie">
     <h2>Ajouter une Catégorie d'Articles</h2>
-    <form @submit.prevent="createCategorie">
+    <form @submit.prevent="createCategorie" class="form-container">
       <div class="form-group">
-        <input type="text" id="nom" v-model="newCategorie.nom" placeholder="Nom" required>
+        <input type="text" id="nom" v-model="newCategorie.nom" class="form-control" placeholder="Nom" required>
       </div>
       <div class="form-group">
-        <textarea id="description" v-model="newCategorie.description" placeholder="Description"></textarea>
+        <textarea id="description" v-model="newCategorie.description" class="form-control" placeholder="Description"></textarea>
       </div>
-     
       <div class="form-group">
-        <input type="number" id="Quantitearticle" v-model="newCategorie.Quantitearticle" placeholder="Quantité Article Present" required>
+        <input type="number" id="Quantitearticle" v-model="newCategorie.Quantitearticle" class="form-control" placeholder="Quantité d'articles" required>
       </div>
-      <button type="submit">Ajouter</button>
+      <button type="submit" class="btn btn-primary w-100">Ajouter</button>
     </form>
   </div>
 </template>
@@ -36,14 +35,11 @@ export default {
       try {
         const response = await CategorieService.create(this.newCategorie);
         console.log('Nouvelle catégorie ajoutée :', response.data);
-        // Réinitialisation du formulaire après ajout
         this.newCategorie = {
           nom: '',
           description: '',
           Quantitearticle: ''
-        
         };
-        // Redirection vers la liste des catégories après ajout
         this.$router.push('/categorie-article/liste');
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la catégorie :', error);
@@ -57,18 +53,19 @@ export default {
 .add-categorie {
   width: 100%;
   max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  background-color: #575d64;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(118, 122, 122, 0.2);
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #f0f0f0; /* Couleur de fond sombre */
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   font-family: 'Orbitron', sans-serif;
-  color: rgb(60, 67, 67);
+  color: #fff; /* Couleur de texte clair */
 }
 
 h2 {
-  color: rgb(58, 69, 69);
+  color: #3a4545; /* Couleur du titre */
   text-align: center;
+  margin-bottom: 20px;
 }
 
 .form-group {
@@ -77,38 +74,34 @@ h2 {
 
 input[type="text"],
 textarea,
-input[type="date"],
 input[type="number"] {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   font-size: 16px;
-  border: 1px solid #3e3636;
+  border: 1px solid #ccc; /* Bordure légère */
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: rgb(103, 110, 110);
+  background-color: #fff; /* Fond blanc */
+  color: #333; /* Couleur de texte principale */
 }
 
 input[type="text"]:focus,
 textarea:focus,
-input[type="date"]:focus,
 input[type="number"]:focus {
   outline: none;
-  border-color: rgb(74, 74, 82);
+  border-color: #555; /* Couleur de bordure au focus */
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: rgb(68, 73, 73);
-  color: #000;
+button[type="submit"] {
+  background-color: #007bff; /* Bleu pour le bouton */
+  color: #fff; /* Texte blanc */
   border: none;
+  padding: 10px;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
 }
 
-button:hover {
-  background-color: rgb(76, 76, 84);
-  color: #fff;
+button[type="submit"]:hover {
+  background-color: #0056b3; /* Variation de bleu au survol */
 }
 </style>

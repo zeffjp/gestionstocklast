@@ -60,9 +60,7 @@
           </ul>
         </li>
         <!-- Bouton de déconnexion -->
-        <li>
-          <button class="btn btn-danger logout-btn" @click="logout">Déconnexion</button>
-        </li>
+       
       </ul>
     </nav>
   </div>
@@ -79,15 +77,12 @@ export default {
   },
   methods: {
     toggleSubMenu(menuName) {
-      this.expandedMenu = (this.expandedMenu === menuName) ? null : menuName;
+      this.expandedMenu = this.expandedMenu === menuName ? null : menuName;
     },
     isSubMenuExpanded(menuName) {
       return this.expandedMenu === menuName;
     },
-    logout() {
-      this.isAuthenticated = false; 
-      this.$router.push('/login');
-    }
+   
   }
 };
 </script>
@@ -97,39 +92,39 @@ export default {
   position: fixed;
   top: 60px;
   left: 0;
-  bottom: 0; 
-  width: 220px; 
-  background-color: #757c83;
+  bottom: 0;
+  width: 220px;
+  background-color: #c6ccd1;
   padding: 20px;
   box-sizing: border-box;
-  overflow-y: auto; 
+  overflow-y: auto;
   font-family: 'Orbitron', sans-serif;
-  border-right: 1px solid #ccc; 
+  border-right: 1px solid #817070;
 }
 
 .expand-btn {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  color: rgb(236, 244, 244); 
+  color: #241c1c;
   text-align: left;
 }
 
 .expand-btn:hover {
-  color: rgb(169, 169, 201);
+  color: #1e1e9d;
 }
 
 .sub-menu {
   display: none;
   padding-left: 10px;
   transition: max-height 0.3s ease;
-  max-height: 0; 
+  max-height: 0;
   overflow: hidden;
 }
 
 .sub-menu.expanded {
   display: block;
-  max-height: 200px; 
+  max-height: 200px;
 }
 
 .nav-link {
@@ -140,16 +135,13 @@ export default {
 }
 
 .nav-link:hover {
-  color: #ddd;
+  color: #6d4040;
 }
 
 .active-link {
-  font-weight: bold; 
-  color: rgb(173, 173, 219); 
+  font-weight: bold;
+  color: #51606c;
 }
 
-.logout-btn {
-  margin-top: 20px; 
-  width: 100%;
-}
+
 </style>

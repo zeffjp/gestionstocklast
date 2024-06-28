@@ -3,7 +3,10 @@
     <h2>Liste des Commandes</h2>
 
     <!-- Champ de recherche -->
-    <input type="text" v-model="searchQuery" placeholder="Rechercher" @input="filterCommandes">
+    <div class="search-container">
+      <input type="text" v-model="searchQuery" placeholder="Rechercher" class="filter-input" @input="filterCommandes">
+      <i class="fa fa-search search-icon"></i>
+    </div>
 
     <!-- Tableau des commandes -->
     <table>
@@ -29,17 +32,19 @@
           <td>{{ commande.prixTotal }}</td>
           <td>{{ commande.statut }}</td>
           <td>
-            <template v-if="!commande.editing">
+            <template v-if="!commande.editMode">
               <button @click="editCommande(commande)">Modifier</button>
-              <button @click="confirmDelete(commande)">Supprimer</button>
-              <span v-if="commande.confirmDelete">
-                Confirmer ? <button @click="deleteCommande(commande)">Oui</button> <button @click="cancelDelete(commande)">Non</button>
-              </span>
             </template>
             <template v-else>
               <button @click="saveCommande(commande)">Enregistrer</button>
               <button @click="cancelEdit(commande)">Annuler</button>
             </template>
+            <button @click="confirmDelete(commande)">Supprimer</button>
+            <span v-if="commande.confirmDelete">
+              Confirmer ?
+              <button @click="deleteCommande(commande)">Oui</button>
+              <button @click="cancelDelete(commande)">Non</button>
+            </span>
           </td>
         </tr>
         <!-- Afficher un message si aucune commande ne correspond à la recherche -->
@@ -62,11 +67,7 @@ export default {
   name: 'ListCommande',
   data() {
     return {
-      commandes: [   { id: 1, numero: 'CMD001', client: 'Client A', date: '2024-06-27', article: 'Article X', quantite: 2, prixTotal: 50.00, statut: 'En cours' },
-        { id: 2, numero: 'CMD002', client: 'Client B', date: '2024-06-26', article: 'Article Y', quantite: 1, prixTotal: 30.00, statut: 'Livré' },
-        { id: 3, numero: 'CMD003', client: 'Client A', date: '2024-06-25', article: 'Article Z', quantite: 3, prixTotal: 80.00, statut: 'En cours' },
-        { id: 4, numero: 'CMD004', client: 'Client C', date: '2024-06-24', article: 'Article X', quantite: 1, prixTotal: 25.00, statut: 'Annulé' },
-        { id: 5, numero: 'CMD005', client: 'Client B', date: '2024-06-23', article: 'Article Z', quantite: 2, prixTotal: 60.00, statut: 'Livré' }],
+      commandes: [],
       filteredCommandes: [],
       searchQuery: ''
     };
@@ -82,29 +83,26 @@ export default {
       }
     },
     async deleteCommande(commande) {
-      const commandeId = commande.id;
       try {
-        await CommandeService.delete(commandeId);
-        this.commandes = this.commandes.filter(cmd => cmd.id !== commandeId);
-        this.filteredCommandes = this.filteredCommandes.filter(cmd => cmd.id !== commandeId);
+        await CommandeService.delete(commande.id);
+        this.commandes = this.commandes.filter(c => c.id !== commande.id);
+        this.filteredCommandes = this.filteredCommandes.filter(c => c.id !== commande.id);
+        console.log(`Commande ${commande.numero} supprimée.`);
+        commande.confirmDelete = false; // Cacher la confirmation après suppression
       } catch (error) {
         console.error('Erreur lors de la suppression de la commande :', error);
       }
     },
-    confirmDelete(commande) {
-      commande.confirmDelete = true;
-    },
-    cancelDelete(commande) {
-      commande.confirmDelete = false;
-    },
     editCommande(commande) {
-      commande.editing = true;
+      // Désactiver le mode édition pour tous les autres commandes
+      this.commandes.forEach(c => c.editMode = false);
+      commande.editMode = true;
     },
     async saveCommande(commande) {
       try {
         await CommandeService.update(commande.id, commande);
-        commande.editing = false;
-        const index = this.commandes.findIndex(cmd => cmd.id === commande.id);
+        commande.editMode = false;
+        const index = this.commandes.findIndex(c => c.id === commande.id);
         if (index !== -1) {
           this.commandes[index] = { ...commande };
           this.filteredCommandes = [...this.commandes];
@@ -114,27 +112,35 @@ export default {
       }
     },
     cancelEdit(commande) {
-      commande.editing = false;
+      commande.editMode = false;
     },
     filterCommandes() {
       const query = this.searchQuery.toLowerCase().trim();
       if (query === '') {
         this.filteredCommandes = [...this.commandes];
       } else {
-        this.filteredCommandes = this.commandes.filter(cmd =>
-          cmd.numero.toLowerCase().includes(query) ||
-          cmd.client.toLowerCase().includes(query) ||
-          cmd.article.toLowerCase().includes(query) ||
-          cmd.statut.toLowerCase().includes(query)
+        this.filteredCommandes = this.commandes.filter(commande =>
+          commande.numero.toLowerCase().includes(query) ||
+          commande.client.toLowerCase().includes(query) ||
+          commande.article.toLowerCase().includes(query) ||
+          commande.statut.toLowerCase().includes(query)
         );
       }
     },
     formatDate(date) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(date).toLocaleDateString('fr-FR', options);
+    },
+    confirmDelete(commande) {
+      // Afficher la confirmation de suppression pour la commande spécifiée
+      commande.confirmDelete = true;
+    },
+    cancelDelete(commande) {
+      // Annuler la confirmation de suppression pour la commande spécifiée
+      commande.confirmDelete = false;
     }
   },
-  created() {
+  mounted() {
     this.fetchCommandes();
   }
 };
@@ -142,16 +148,38 @@ export default {
 
 <style scoped>
 .commande-list {
-  background-color: #757c83;
+  background-color: #f0f0f0;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(118, 122, 122, 0.2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   font-family: 'Orbitron', sans-serif;
-  color: rgb(60, 67, 67);
+  color: #fff;
 }
 
 h2 {
-  color: #f0e3e3;
+  color: #444;
+}
+
+.search-container {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.filter-input {
+  padding: 10px;
+  width: calc(100% - 30px); /* Ajustement pour inclure l'icône de recherche */
+  border: none;
+  border-radius: 15px;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: 18px;
 }
 
 table {
@@ -161,13 +189,14 @@ table {
 }
 
 th, td {
-  padding: 8px;
-  text-align: left;
+  padding: 12px;
+  text-align: center;
 }
 
 th {
   background-color: #b6c7d9;
   color: #fff;
+  font-weight: bold;
 }
 
 tr:nth-child(even) {
@@ -175,29 +204,22 @@ tr:nth-child(even) {
 }
 
 td {
-  color: rgb(15, 16, 16);
-}
-
-button {
-  padding: 5px 10px;
-  background-color: rgb(153, 171, 171);
-  color: #000;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s, color 0.3s;
-}
-
-button:hover {
-  background-color: rgb(116, 116, 135);
   color: #fff;
 }
 
-input[type="text"] {
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
+button {
+  padding: px 12px;
+  background-color: #99abab;
+  color: #000;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+  margin-right: 5px;
+}
+
+button:hover {
+  background-color: #747487;
+  color: #fff;
 }
 </style>

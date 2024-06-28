@@ -3,13 +3,15 @@
     <h2>Liste des Catégories d'Articles</h2>
     
     <!-- Champ de recherche -->
-    <input type="text" v-model="searchQuery" placeholder="Rechercher " @input="filterCategories">
-    
+    <input type="text" v-model="searchQuery" placeholder="Rechercher" @input="filterCategories" class="form-control mb-3">
+
+    <!-- Tableau des catégories -->
     <table>
       <thead>
         <tr>
           <th>Nom</th>
           <th>Description</th>
+          <th>Quantité référence (Article)</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -17,11 +19,15 @@
         <tr v-for="categorie in filteredCategories" :key="categorie.id">
           <td>
             <template v-if="!categorie.editing">{{ categorie.nom }}</template>
-            <input v-model="categorie.nom" v-else>
+            <input v-model="categorie.nom" v-else class="form-control">
           </td>
           <td>
             <template v-if="!categorie.editing">{{ categorie.description }}</template>
-            <input v-model="categorie.description" v-else>
+            <input v-model="categorie.description" v-else class="form-control">
+          </td>
+          <td>
+            <template v-if="!categorie.editing">{{ categorie.quantite_reference }}</template>
+            <input v-model="categorie.quantite_reference" v-else class="form-control">
           </td>
           <td>
             <template v-if="!categorie.editing">
@@ -39,11 +45,11 @@
         </tr>
         <!-- Si aucun résultat ne correspond à la recherche -->
         <tr v-if="filteredCategories.length === 0 && searchQuery !== ''">
-          <td colspan="3" style="text-align: center;">Aucun résultat trouvé.</td>
+          <td colspan="4" style="text-align: center;">Aucun résultat trouvé.</td>
         </tr>
         <!-- Afficher un message si toutes les catégories sont visibles -->
         <tr v-if="!searchQuery && categories.length > 0 && filteredCategories.length === categories.length">
-          <td colspan="3" style="text-align: center;">Affichage de toutes les catégories.</td>
+          <td colspan="4" style="text-align: center;">Affichage de toutes les catégories.</td>
         </tr>
       </tbody>
     </table>
@@ -57,11 +63,7 @@ export default {
   name: 'ListCategorie',
   data() {
     return {
-      categories: [
-        { id: 1, nom: 'Technologie', description: 'Articles sur les dernières technologies', editing: false, confirmDelete: false },
-        { id: 2, nom: 'Santé', description: 'Conseils et informations sur la santé', editing: false, confirmDelete: false },
-        { id: 3, nom: 'Voyage', description: 'Destinations et astuces de voyage', editing: false, confirmDelete: false },
-      ],
+      categories: [],
       filteredCategories: [],
       searchQuery: '',
     };
@@ -134,16 +136,16 @@ export default {
 
 <style scoped>
 .categorie-list {
-  background-color: #757c83;
+  background-color: #f0f0f0;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 15px;
   box-shadow: 0 0 20px rgba(118, 122, 122, 0.2);
   font-family: 'Orbitron', sans-serif;
   color: rgb(60, 67, 67);
 }
 
 h2 {
-  color: #f0e3e3;
+  color: #444;
 }
 
 table {
@@ -186,11 +188,12 @@ button:hover {
 }
 
 input[type="text"] {
-  padding: 8px;
-  font-size: 16px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
+  width: 100%; /* Ajout de cette ligne pour étendre le champ de recherche */
 }
 
 input[type="text"]::placeholder {

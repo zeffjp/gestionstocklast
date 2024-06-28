@@ -1,155 +1,155 @@
 <template>
-  <div class="commande-list">
-    <h2>Liste des Commandes</h2>
+  <div class="client-list">
+    <h2>Liste des Clients</h2>
 
     <!-- Champ de recherche -->
-    <input type="text" v-model="searchQuery" placeholder="Rechercher " class="filter-input" @input="filterCommandes">
+    <input type="text" v-model="searchQuery" placeholder="Rechercher" @input="filterClients" class="form-control mb-3">
 
-    <!-- Tableau des commandes -->
-    <table>
-      <thead>
-        <tr>
-          <th>Numéro</th>
-          <th>Client</th>
-          <th>Date</th>
-          <th>Article</th>
-          <th>Quantité</th>
-          <th>Prix Total</th>
-          <th>Statut</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="commande in filteredCommandes" :key="commande.id">
-          <td>{{ commande.numero }}</td>
-          <td>{{ commande.client }}</td>
-          <td>{{ formatDate(commande.date) }}</td>
-          <td>{{ commande.article }}</td>
-          <td>{{ commande.quantite }}</td>
-          <td>{{ commande.prixTotal }}</td>
-          <td>{{ commande.statut }}</td>
-          <td>
-            <template v-if="!commande.editMode">
-              <button @click="editCommande(commande)">Modifier</button>
-            </template>
-            <template v-else>
-              <button @click="saveCommande(commande)">Enregistrer</button>
-              <button @click="cancelEdit(commande)">Annuler</button>
-            </template>
-            <button @click="confirmDelete(commande)">Supprimer</button>
-            <span v-if="commande.confirmDelete">
-              Confirmer ?
-              <button @click="deleteCommande(commande)">Oui</button>
-              <button @click="cancelDelete(commande)">Non</button>
-            </span>
-          </td>
-        </tr>
-        <!-- Afficher un message si aucune commande ne correspond à la recherche -->
-        <tr v-if="filteredCommandes.length === 0 && searchQuery !== ''">
-          <td colspan="8" style="text-align: center;">Aucune commande trouvée.</td>
-        </tr>
-        <!-- Afficher un message si toutes les commandes sont visibles -->
-        <tr v-if="!searchQuery && commandes.length > 0 && filteredCommandes.length === commandes.length">
-          <td colspan="8" style="text-align: center;">Affichage de toutes les commandes.</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Tableau des clients -->
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Affichage des clients filtrés -->
+          <tr v-for="client in filteredClients" :key="client.id">
+            <td>
+              <template v-if="!client.editing">{{ client.nom }}</template>
+              <input v-model="client.nom" v-else class="form-control">
+            </td>
+            <td>
+              <template v-if="!client.editing">{{ client.prenom }}</template>
+              <input v-model="client.prenom" v-else class="form-control">
+            </td>
+            <td>
+              <template v-if="!client.editing">{{ client.email }}</template>
+              <input v-model="client.email" v-else class="form-control">
+            </td>
+            <td>
+              <template v-if="!client.editing">{{ client.telephone }}</template>
+              <input v-model="client.telephone" v-else class="form-control">
+            </td>
+            <td>
+              <template v-if="!client.editing">
+                <button @click="editClient(client)" class="btn btn-sm btn-primary">Modifier</button>
+                <button @click="confirmDelete(client)" class="btn btn-sm btn-danger">Supprimer</button>
+                <span v-if="client.confirmDelete">
+                  Confirmer ? 
+                  <button @click="deleteClient(client)" class="btn btn-sm btn-danger">Oui</button> 
+                  <button @click="cancelDelete(client)" class="btn btn-sm btn-secondary">Non</button>
+                </span>
+              </template>
+              <template v-else>
+                <button @click="saveClient(client)" class="btn btn-sm btn-success">Enregistrer</button>
+                <button @click="cancelEdit(client)" class="btn btn-sm btn-secondary">Annuler</button>
+              </template>
+            </td>
+          </tr>
+          <!-- Si aucun résultat ne correspond à la recherche -->
+          <tr v-if="filteredClients.length === 0 && searchQuery !== ''">
+            <td colspan="5" style="text-align: center;">Aucun résultat trouvé.</td>
+          </tr>
+          <!-- Afficher un message si tous les clients sont visibles -->
+          <tr v-if="!searchQuery && clients.length > 0 && filteredClients.length === clients.length">
+            <td colspan="5" style="text-align: center;">Affichage de tous les clients.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
-import CommandeService from '@/services/CommandeService';
+import ClientService from '@/services/ClientService';
 
 export default {
-  name: 'ListCommande',
+  name: 'ListClient',
   data() {
     return {
-      commandes: [
-        { id: 1, numero: 'CMD001', client: 'Client A', date: '2024-06-27T10:30:00Z', article: 'Article X', quantite: 3, prixTotal: 150, statut: 'En cours', editMode: false, confirmDelete: false },
-        { id: 2, numero: 'CMD002', client: 'Client B', date: '2024-06-26T15:45:00Z', article: 'Article Y', quantite: 1, prixTotal: 50, statut: 'Livré', editMode: false, confirmDelete: false },
-        { id: 3, numero: 'CMD003', client: 'Client C', date: '2024-06-25T09:00:00Z', article: 'Article Z', quantite: 2, prixTotal: 100, statut: 'En attente', editMode: false, confirmDelete: false }
-      ],
-      filteredCommandes: [],
-      searchQuery: ''
+      clients: [],
+      searchQuery: '',
+      filteredClients: []
     };
   },
   methods: {
-    async fetchCommandes() {
+    async fetchClients() {
       try {
-        const response = await CommandeService.getAll();
-        this.commandes = response.data;
-        this.filteredCommandes = [...this.commandes]; // Initialisation du filtre
+        const response = await ClientService.getAll();
+        this.clients = response.data.map(client => ({
+          ...client,
+          editing: false,
+          confirmDelete: false
+        }));
+        this.filteredClients = [...this.clients];
       } catch (error) {
-        console.error('Erreur lors de la récupération des commandes :', error);
+        console.error('Erreur lors de la récupération des clients :', error);
       }
     },
-    async deleteCommande(commande) {
+    async deleteClient(client) {
+      const clientId = client.id;
       try {
-        await CommandeService.delete(commande.id);
-        this.commandes = this.commandes.filter(c => c.id !== commande.id);
-        this.filteredCommandes = this.filteredCommandes.filter(c => c.id !== commande.id);
-        console.log(`Commande ${commande.numero} supprimée.`);
-        commande.confirmDelete = false; // Cacher la confirmation après suppression
+        await ClientService.delete(clientId);
+        this.clients = this.clients.filter(c => c.id !== clientId);
+        this.filteredClients = this.filteredClients.filter(c => c.id !== clientId);
       } catch (error) {
-        console.error('Erreur lors de la suppression de la commande :', error);
+        console.error('Erreur lors de la suppression du client :', error);
       }
     },
-    editCommande(commande) {
-      // Désactiver le mode édition pour tous les autres commandes
-      this.commandes.forEach(c => c.editMode = false);
-      commande.editMode = true;
+    confirmDelete(client) {
+      client.confirmDelete = true;
     },
-    async saveCommande(commande) {
+    cancelDelete(client) {
+      client.confirmDelete = false;
+    },
+    editClient(client) {
+      client.editing = true;
+    },
+    async saveClient(client) {
       try {
-        await CommandeService.update(commande.id, commande);
-        commande.editMode = false;
-        const index = this.commandes.findIndex(c => c.id === commande.id);
+        await ClientService.update(client.id, client);
+        client.editing = false;
+        const index = this.clients.findIndex(c => c.id === client.id);
         if (index !== -1) {
-          this.commandes[index] = { ...commande };
-          this.filteredCommandes = [...this.commandes];
+          this.clients[index] = { ...client };
+          this.filteredClients = [...this.clients];
         }
       } catch (error) {
-        console.error('Erreur lors de la sauvegarde des modifications :', error);
+        console.error('Erreur lors de la sauvegarde des modifications du client :', error);
       }
     },
-    cancelEdit(commande) {
-      commande.editMode = false;
+    cancelEdit(client) {
+      client.editing = false;
     },
-    filterCommandes() {
+    filterClients() {
       const query = this.searchQuery.toLowerCase().trim();
       if (query === '') {
-        this.filteredCommandes = [...this.commandes];
+        this.filteredClients = [...this.clients];
       } else {
-        this.filteredCommandes = this.commandes.filter(commande =>
-          commande.numero.toLowerCase().includes(query) ||
-          commande.client.toLowerCase().includes(query) ||
-          commande.article.toLowerCase().includes(query) ||
-          commande.statut.toLowerCase().includes(query)
+        this.filteredClients = this.clients.filter(client =>
+          client.nom.toLowerCase().includes(query) ||
+          client.prenom.toLowerCase().includes(query) ||
+          client.email.toLowerCase().includes(query) ||
+          client.telephone.includes(query)
         );
       }
-    },
-    formatDate(date) {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(date).toLocaleDateString('fr-FR', options);
-    },
-    confirmDelete(commande) {
-      // Afficher la confirmation de suppression pour la commande spécifiée
-      commande.confirmDelete = true;
-    },
-    cancelDelete(commande) {
-      // Annuler la confirmation de suppression pour la commande spécifiée
-      commande.confirmDelete = false;
     }
   },
-  mounted() {
-    this.fetchCommandes();
+  created() {
+    this.fetchClients();
   }
 };
 </script>
 
 <style scoped>
-.commande-list {
-  background-color: #757c83;
+.client-list {
+  background-color: #f0f0f0;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(118, 122, 122, 0.2);
@@ -158,54 +158,84 @@ export default {
 }
 
 h2 {
-  color: #f0e3e3;
+  color: #444;
 }
 
-.filter-input {
-  margin-bottom: 20px;
-  padding: 10px;
-  width: 50%;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  font-family: 'Orbitron', sans-serif;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
+.table-responsive {
   margin-top: 20px;
 }
 
-th, td {
-  padding: 8px;
-  text-align: left;
-}
-
-th {
+.table th {
   background-color: #b6c7d9;
   color: #fff;
 }
 
-tr:nth-child(even) {
+.table-striped tbody tr:nth-of-type(odd) {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-td {
+.table td {
   color: rgb(15, 16, 16);
 }
 
-button {
-  padding: 5px 10px;
-  background-color: rgb(153, 171, 171);
-  color: #000;
-  border: none;
-  border-radius: 4px;
+.btn {
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
 }
 
-button:hover {
-  background-color: rgb(116, 116, 135);
+.btn-primary {
+  background-color: rgb(0, 123, 255);
   color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: rgb(23, 101, 237);
+}
+
+.btn-danger {
+  background-color: rgb(220, 53, 69);
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: rgb(185, 28, 49);
+}
+
+.btn-success {
+  background-color: rgb(40, 167, 69);
+  color: #fff;
+}
+
+.btn-success:hover {
+  background-color: rgb(30, 140, 60);
+}
+
+.btn-secondary {
+  background-color: rgb(108, 117, 125);
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background-color: rgb(80, 89, 97);
+}
+
+.form-control {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 15px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  color: #495057;
+  background-color: #fff;
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 </style>

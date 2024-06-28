@@ -1,43 +1,49 @@
 <template>
   <div class="add-client-container">
-    <div class="form-container">
-      <form @submit.prevent="addClient" class="form-style">
-        <h2>Ajouter un Client</h2>
-        <div class="form-group">
-          <input type="text" v-model="client.name" placeholder="Nom" required>
-        </div>
-        <div class="form-group">
-          <input type="email" v-model="client.email" placeholder="Email" required>
-        </div>
-        <div class="form-group">
-          <input type="text" v-model="client.phone" placeholder="Téléphone" required>
-        </div>
-        <div class="form-group">
-          <input type="text" v-model="client.address" placeholder="Adresse" required>
-        </div>
-        <button type="submit">Ajouter</button>
-      </form>
-    </div>
+    <h2>Ajouter une Catégorie d'Articles</h2>
+    <form @submit.prevent="createCategorie" class="form-container">
+      <div class="form-group">
+        <input type="text" id="nom" v-model="newCategorie.nom" class="form-control" placeholder="Nom" required>
+      </div>
+      <div class="form-group">
+        <textarea id="description" v-model="newCategorie.description" class="form-control" placeholder="Description"></textarea>
+      </div>
+      <div class="form-group">
+        <input type="number" id="Quantitearticle" v-model="newCategorie.Quantitearticle" class="form-control" placeholder="Quantité d'articles" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+    </form>
   </div>
 </template>
 
 <script>
+import CategorieService from '@/services/CategorieService';
+
 export default {
-  name: 'AddClient',
+  name: 'AddCategorie',
   data() {
     return {
-      client: {
-        name: '',
-        email: '',
-        phone: '',
-        address: ''
+      newCategorie: {
+        nom: '',
+        description: '',
+        Quantitearticle: ''
       }
     };
   },
   methods: {
-    addClient() {
-      console.log('Client à ajouter :', this.client);
-      // Logique pour ajouter le client, par exemple via une API
+    async createCategorie() {
+      try {
+        const response = await CategorieService.create(this.newCategorie);
+        console.log('Nouvelle catégorie ajoutée :', response.data);
+        this.newCategorie = {
+          nom: '',
+          description: '',
+          Quantitearticle: ''
+        };
+        this.$router.push('/categorie-article/liste');
+      } catch (error) {
+        console.error('Erreur lors de l\'ajout de la catégorie :', error);
+      }
     }
   }
 };
@@ -65,12 +71,11 @@ h2 {
   max-width: 600px;
   margin: auto;
   padding: 20px;
-  background-color: #575d64;
+  background-color: #f0f0f0; /* Couleur de fond légère */
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(56, 67, 67, 0.2);
-  box-sizing: border-box;
-  font-family: 'Orbitron', sans-serif;
-  color: #0ff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Légère ombre */
+  font-family: 'Roboto', sans-serif; /* Police de caractères */
+  color: #333; /* Couleur de texte principale */
 }
 
 form {
@@ -85,32 +90,30 @@ input[type="number"] {
   width: 100%;
   padding: 10px;
   font-size: 16px;
-  border: 1px solid rgb(65, 76, 76);
+  border: 1px solid #ccc; /* Bordure légère */
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.5); 
-  color: rgb(103, 110, 110);
+  background-color: #fff; /* Fond blanc */
+  color: #333; /* Couleur de texte principale */
 }
 
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="number"]:focus {
   outline: none;
-  border-color: rgb(74, 74, 82);
+  border-color: #555; /* Couleur de bordure au focus */
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: rgb(68, 73, 73);
-  color: #000;
+button[type="submit"] {
+  background-color: #007bff; /* Bleu pour le bouton */
+  color: #fff; /* Texte blanc */
   border: none;
+  padding: 10px;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
 }
 
-button:hover {
-  background-color: rgb(76, 76, 84);
-  color: #fff;
+button[type="submit"]:hover {
+  background-color: #0056b3; /* Variation de bleu au survol */
 }
 </style>

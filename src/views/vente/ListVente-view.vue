@@ -3,7 +3,10 @@
     <h2>Liste des Ventes</h2>
 
     <!-- Champ de recherche -->
-    <input type="text" v-model="searchQuery" placeholder="Rechercher" @input="filterVentes">
+    <div class="search-container">
+      <input type="text" v-model="searchQuery" placeholder="Rechercher" class="filter-input" @input="filterVentes">
+      <i class="fa fa-search search-icon"></i>
+    </div>
 
     <!-- Tableau des ventes -->
     <table>
@@ -12,9 +15,10 @@
           <th>Client</th>
           <th>Date</th>
           <th>Article Vendu</th>
-          <th>Quantité Vendu</th>
+          <th>Quantité Vendue</th>
           <th>Prix Total</th>
-          
+          <th>Statut</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -48,6 +52,14 @@
             <button v-else @click="saveVente(vente.id)">Sauvegarder</button>
             <button @click="deleteVente(vente.id)">Supprimer</button>
           </td>
+        </tr>
+        <!-- Afficher un message si aucune vente ne correspond à la recherche -->
+        <tr v-if="filteredVentes.length === 0 && searchQuery !== ''">
+          <td colspan="7" style="text-align: center;">Aucune vente trouvée.</td>
+        </tr>
+        <!-- Afficher un message si toutes les ventes sont visibles -->
+        <tr v-if="!searchQuery && ventes.length > 0 && filteredVentes.length === ventes.length">
+          <td colspan="7" style="text-align: center;">Affichage de toutes les ventes.</td>
         </tr>
       </tbody>
     </table>
@@ -138,16 +150,38 @@ export default {
 
 <style scoped>
 .vente-list {
-  background-color: #757c83;
+  background-color: #f0f0f0;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(118, 122, 122, 0.2);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   font-family: 'Orbitron', sans-serif;
-  color: rgb(60, 67, 67);
+  color: #fff;
 }
 
 h2 {
-  color: #f0e3e3;
+  color: #444;
+}
+
+.search-container {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.filter-input {
+  padding: 10px;
+  width: calc(100% - 30px); /* Ajustement pour inclure l'icône de recherche */
+  border: none;
+  border-radius: 15px;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: 18px;
 }
 
 table {
@@ -157,13 +191,14 @@ table {
 }
 
 th, td {
-  padding: 8px;
-  text-align: left;
+  padding: 12px;
+  text-align: center;
 }
 
 th {
   background-color: #b6c7d9;
   color: #fff;
+  font-weight: bold;
 }
 
 tr:nth-child(even) {
@@ -171,29 +206,22 @@ tr:nth-child(even) {
 }
 
 td {
-  color: rgb(15, 16, 16);
+  color: #fff;
 }
 
 button {
-  padding: 5px 10px;
-  background-color: rgb(153, 171, 171);
+  padding: 8px 12px;
+  background-color: #99abab;
   color: #000;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
+  margin-right: 5px;
 }
 
 button:hover {
-  background-color: rgb(116, 116, 135);
+  background-color: #747487;
   color: #fff;
-}
-
-input[type="text"] {
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
 }
 </style>

@@ -2,13 +2,22 @@
   <div class="add-vente">
     <h2>Ajouter une Vente</h2>
     <form @submit.prevent="createVente">
-      <input type="text" v-model="newVente.numero" placeholder="Numéro de vente" required>
-      <input type="text" v-model="newVente.client" placeholder="Client" required>
-      <input type="date" v-model="newVente.date" placeholder="Date de vente" required>
-      <input type="text" v-model="newVente.quantiteVendue" placeholder="Quantité Vendue (ex: 100 unités)" required>
-      <input type="text" v-model="newVente.prixTotal" placeholder="Prix Total (ex: 500 EUR)" required>
-
-      <button type="submit">Ajouter</button>
+      <div class="form-group">
+        <input type="text" v-model="newVente.numero" class="form-control" placeholder="Numéro de vente" required>
+      </div>
+      <div class="form-group">
+        <input type="text" v-model="newVente.client" class="form-control" placeholder="Client" required>
+      </div>
+      <div class="form-group">
+        <input type="date" v-model="newVente.date" class="form-control" placeholder="Date de vente" required>
+      </div>
+      <div class="form-group">
+        <input type="text" v-model="newVente.quantiteVendue" class="form-control" placeholder="Quantité Vendue (ex: 100 unités)" required>
+      </div>
+      <div class="form-group">
+        <input type="text" v-model="newVente.prixTotal" class="form-control" placeholder="Prix Total (ex: 500 EUR)" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
   </div>
 </template>
@@ -60,15 +69,15 @@ export default {
   max-width: 600px;
   margin: auto;
   padding: 20px;
-  background-color: #575d64;
+  background-color: #f0f0f0; /* Couleur de fond légère */
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(118, 122, 122, 0.2);
-  font-family: 'Orbitron', sans-serif;
-  color: rgb(60, 67, 67);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Légère ombre */
+  font-family: 'Roboto', sans-serif; /* Police de caractères */
+  color: #333; /* Couleur de texte principale */
 }
 
 h2 {
-  color: #f0e3e3;
+  color: #444; /* Couleur du titre */
   text-align: center;
 }
 
@@ -77,32 +86,33 @@ form {
   flex-direction: column;
 }
 
+.form-group {
+  margin-bottom: 10px;
+}
+
 input[type="text"],
 input[type="date"],
-input[type="number"],
-select {
-  margin-bottom: 10px;
+input[type="number"] {
   padding: 10px;
   font-size: 16px;
-  border: none;
+  border: 1px solid #ccc; /* Bordure légère */
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: rgb(103, 110, 110);
+  background-color: #fff; /* Fond blanc */
+  color: #333; /* Couleur de texte principale */
 }
 
 input[type="text"]:focus,
 input[type="date"]:focus,
-input[type="number"]:focus,
-select:focus {
+input[type="number"]:focus {
   outline: none;
-  border-color: rgb(74, 74, 82);
+  border-color: #555; /* Couleur de bordure au focus */
 }
 
 button {
   align-self: flex-end;
-  padding: 10px 280px;
-  background-color:rgb(68, 73, 73);
-  color: #000;
+  padding: 10px 50px;
+  background-color: #007bff; /* Bleu pour le bouton */
+  color: #fff; /* Texte blanc */
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -110,7 +120,6 @@ button {
 }
 
 button:hover {
-  background-color: rgb(116, 116, 135);
-  color: #fff;
+  background-color: #0056b3; /* Variation de bleu au survol */
 }
 </style>
