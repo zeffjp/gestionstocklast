@@ -33,7 +33,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #9aa0a6;
+  color: #414346;
   background-color: #757c83; /* Couleur de fond gris foncé */
   display: flex;
   flex-direction: column;

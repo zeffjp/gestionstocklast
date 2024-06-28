@@ -55,7 +55,7 @@
         </tr>
         <!-- Afficher un message si aucune vente ne correspond à la recherche -->
         <tr v-if="filteredVentes.length === 0 && searchQuery !== ''">
-          <td colspan="7" style="text-align: center;">Aucune vente trouvée.</td>
+          <td colspan="7" style="text-align: center;">Aucun résultat trouvé..</td>
         </tr>
         <!-- Afficher un message si toutes les ventes sont visibles -->
         <tr v-if="!searchQuery && ventes.length > 0 && filteredVentes.length === ventes.length">
@@ -206,7 +206,7 @@ tr:nth-child(even) {
 }
 
 td {
-  color: #fff;
+  color: #0f0d0d;
 }
 
 button {

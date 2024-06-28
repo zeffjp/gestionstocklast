@@ -49,7 +49,7 @@
         </tr>
         <!-- Afficher un message si aucune commande ne correspond à la recherche -->
         <tr v-if="filteredCommandes.length === 0 && searchQuery !== ''">
-          <td colspan="8" style="text-align: center;">Aucune commande trouvée.</td>
+          <td colspan="8" style="text-align: center;">Aucun résultat trouvé.</td>
         </tr>
         <!-- Afficher un message si toutes les commandes sont visibles -->
         <tr v-if="!searchQuery && commandes.length > 0 && filteredCommandes.length === commandes.length">
@@ -204,7 +204,7 @@ tr:nth-child(even) {
 }
 
 td {
-  color: #fff;
+  color: #161212;
 }
 
 button {
