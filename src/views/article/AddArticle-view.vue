@@ -6,10 +6,16 @@
         <input type="text" v-model="newArticle.nom" class="form-control" placeholder="Nom" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newArticle.description" class="form-control" placeholder="Description" required>
+        <textarea type="text" v-model="newArticle.description" class="form-control" placeholder="Description" required></textarea>  
+      </div>
+      <div class="form-group">
+        <input type="text" v-model="newArticle.categorie" class="form-control" placeholder="Categorie" required>
       </div>
       <div class="form-group">
         <input type="number" v-model="newArticle.prix" class="form-control" placeholder="Prix" required>
+      </div>
+      <div class="form-group">
+        <input type="number" v-model="newArticle.quantiteenstock" class="form-control" placeholder="Quantite en Stock" required>
       </div>
       <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
@@ -26,7 +32,9 @@ export default {
       newArticle: {
         nom: '',
         description: '',
-        prix: null
+        categorie: '',
+        prix: null,
+        quantiteenstock: null
       }
     };
   },

@@ -93,7 +93,7 @@ export default {
   flex-direction: column;
   align-items: center;
   font-family: 'Orbitron', sans-serif;
-  color: rgb(60, 67, 67);
+  color: rgb(192, 198, 198);
 }
 
 .nav-links {
@@ -116,7 +116,7 @@ export default {
 
 .nav-link:hover, .active-link {
   font-weight: bold;
-  color: #51606c;
+  color: #8d969e;
 }
 
 .dropdown {
