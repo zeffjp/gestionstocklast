@@ -1,15 +1,18 @@
 <template>
   <div class="add-client-container">
-    <h2>Ajouter une Catégorie d'Articles</h2>
-    <form @submit.prevent="createCategorie" class="form-container">
+    <h2>Ajouter un Client</h2>
+    <form @submit.prevent="createClient" class="form-container">
       <div class="form-group">
-        <input type="text" id="nom" v-model="newCategorie.nom" class="form-control" placeholder="Nom" required>
+        <input type="text" v-model="newClient.nom" class="form-control" placeholder="Nom" required>
       </div>
       <div class="form-group">
-        <textarea id="description" v-model="newCategorie.description" class="form-control" placeholder="Description"></textarea>
+        <input type="text" v-model="newClient.prenom" class="form-control" placeholder="Prénom" required>
       </div>
       <div class="form-group">
-        <input type="number" id="Quantitearticle" v-model="newCategorie.Quantitearticle" class="form-control" placeholder="Quantité d'articles" required>
+        <input type="email" v-model="newClient.email" class="form-control" placeholder="Email" required>
+      </div>
+      <div class="form-group">
+        <input type="text" v-model="newClient.telephone" class="form-control" placeholder="Téléphone" required>
       </div>
       <button type="submit" class="btn btn-primary w-100">Ajouter</button>
     </form>
@@ -17,32 +20,34 @@
 </template>
 
 <script>
-import CategorieService from '@/services/CategorieService';
+import ClientService from '@/services/ClientService';
 
 export default {
-  name: 'AddCategorie',
+  name: 'AddClient',
   data() {
     return {
-      newCategorie: {
+      newClient: {
         nom: '',
-        description: '',
-        Quantitearticle: ''
+        prenom: '',
+        email: '',
+        telephone: ''
       }
     };
   },
   methods: {
-    async createCategorie() {
+    async createClient() {
       try {
-        const response = await CategorieService.create(this.newCategorie);
-        console.log('Nouvelle catégorie ajoutée :', response.data);
-        this.newCategorie = {
+        const response = await ClientService.create(this.newClient);
+        console.log('Nouveau client ajouté :', response.data);
+        this.newClient = {
           nom: '',
-          description: '',
-          Quantitearticle: ''
+          prenom: '',
+          email: '',
+          telephone: ''
         };
-        this.$router.push('/categorie-article/liste');
+        this.$router.push('/clients/liste');
       } catch (error) {
-        console.error('Erreur lors de l\'ajout de la catégorie :', error);
+        console.error('Erreur lors de l\'ajout du client :', error);
       }
     }
   }
@@ -85,8 +90,7 @@ form {
 }
 
 input[type="text"],
-input[type="email"],
-input[type="number"] {
+input[type="email"] {
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -97,8 +101,7 @@ input[type="number"] {
 }
 
 input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="number"]:focus {
+input[type="email"]:focus {
   outline: none;
   border-color: #555; /* Couleur de bordure au focus */
 }
