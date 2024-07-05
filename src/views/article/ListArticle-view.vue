@@ -10,12 +10,12 @@
       <table class="table table-striped table-bordered">
         <thead>
           <tr>
+            <th>Image</th>
             <th>Nom</th>
             <th>Description</th>
             <th>Catégorie</th>
             <th>Prix</th>
             <th>Quantité en Stock</th>
-            <th>Supprimé</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -23,28 +23,27 @@
           <!-- Affichage des articles filtrés -->
           <tr v-for="article in filteredArticles" :key="article.id">
             <td>
-              <template v-if="!article.editing">{{ article.nom }}</template>
-              <input v-model="article.nom" v-else class="form-control">
+              <img :src="article.imageUrl" alt="Image de l'article" style="max-width: 100px; max-height: 100px;">
             </td>
             <td>
-              <template v-if="!article.editing">{{ article.description }}</template>
-              <input v-model="article.description" v-else class="form-control">
+              <template v-if="!article.editing">{{ article.articleNom }}</template>
+              <input v-model="article.articleNom" v-else class="form-control">
+            </td>
+            <td>
+              <template v-if="!article.editing">{{ article.articleDescription }}</template>
+              <textarea v-model="article.articleDescription" v-else class="form-control"></textarea>
             </td>
             <td>
               <template v-if="!article.editing">{{ article.categorie }}</template>
               <input v-model="article.categorie" v-else class="form-control">
             </td>
             <td>
-              <template v-if="!article.editing">{{ article.prix }}</template>
-              <input v-model="article.prix" v-else class="form-control">
+              <template v-if="!article.editing">{{ article.articlePrix }}</template>
+              <input type="number" v-model="article.articlePrix" v-else class="form-control">
             </td>
             <td>
-              <template v-if="!article.editing">{{ article.quantite }}</template>
-              <input v-model="article.quantite" v-else class="form-control">
-            </td>
-            <td>
-              <template v-if="!article.editing">{{ article.supprime }}</template>
-              <input v-model="article.supprime" v-else class="form-control">
+              <template v-if="!article.editing">{{ article.articleQuantite }}</template>
+              <input type="number" v-model="article.articleQuantite" v-else class="form-control">
             </td>
             <td>
               <template v-if="!article.editing">
@@ -52,7 +51,7 @@
                 <button @click="confirmDelete(article)" class="btn btn-sm btn-danger">Supprimer</button>
                 <span v-if="article.confirmDelete">
                   Confirmer ? 
-                  <button @click="deleteArticle(article)" class="btn btn-sm btn-danger">Oui</button> 
+                  <button @click="deleteArticle(article.id)" class="btn btn-sm btn-danger">Oui</button> 
                   <button @click="cancelDelete(article)" class="btn btn-sm btn-secondary">Non</button>
                 </span>
               </template>
@@ -85,57 +84,31 @@ export default {
     return {
       articles: [],
       searchQuery: '',
-      filteredArticles: []
+      filteredArticles: [],
+      newArticle: {
+        articleNom: '',
+        articleDescription: '',
+        categorie: '',
+        articlePrix: '',
+        articleQuantite: '',
+        imageUrl: ''
+      },
+      currentArticle: null
     };
   },
+  created() {
+    this.fetchArticles();
+  },
   methods: {
-    async fetchArticles() {
-      try {
-        const response = await ArticleService.getAll();
-        this.articles = response.data.map(article => ({
-          ...article,
-          editing: false,
-          confirmDelete: false
-        }));
-        this.filteredArticles = [...this.articles];
-      } catch (error) {
-        console.error('Erreur lors de la récupération des articles :', error);
-      }
-    },
-    async deleteArticle(article) {
-      const articleId = article.id;
-      try {
-        await ArticleService.delete(articleId);
-        this.articles = this.articles.filter(a => a.id !== articleId);
-        this.filteredArticles = this.filteredArticles.filter(a => a.id !== articleId);
-      } catch (error) {
-        console.error('Erreur lors de la suppression de l\'article :', error);
-      }
-    },
-    confirmDelete(article) {
-      article.confirmDelete = true;
-    },
-    cancelDelete(article) {
-      article.confirmDelete = false;
-    },
-    editArticle(article) {
-      article.editing = true;
-    },
-    async saveArticle(article) {
-      try {
-        await ArticleService.update(article.id, article);
-        article.editing = false;
-        const index = this.articles.findIndex(a => a.id === article.id);
-        if (index !== -1) {
-          this.articles[index] = { ...article };
+    fetchArticles() {
+      ArticleService.getAll()
+        .then(response => {
+          this.articles = response.data;
           this.filteredArticles = [...this.articles];
-        }
-      } catch (error) {
-        console.error('Erreur lors de la sauvegarde des modifications de l\'article :', error);
-      }
-    },
-    cancelEdit(article) {
-      article.editing = false;
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération des articles:', error);
+        });
     },
     filterArticles() {
       const query = this.searchQuery.toLowerCase().trim();
@@ -143,18 +116,65 @@ export default {
         this.filteredArticles = [...this.articles];
       } else {
         this.filteredArticles = this.articles.filter(article =>
-          article.nom.toLowerCase().includes(query) ||
-          article.description.toLowerCase().includes(query) ||
+          article.articleNom.toLowerCase().includes(query) ||
+          article.articleDescription.toLowerCase().includes(query) ||
           article.categorie.toLowerCase().includes(query) ||
-          article.prix.toString().includes(query) ||
-          article.quantite.toString().includes(query) ||
-          article.supprime.toLowerCase().includes(query)
+          article.articlePrix.toString().includes(query) ||
+          article.articleQuantite.toString().includes(query)
         );
       }
+    },
+    editArticle(article) {
+      article.editing = true;
+      this.currentArticle = { ...article };
+    },
+    cancelEdit(article) {
+      article.editing = false;
+    },
+    saveArticle(article) {
+      if (this.currentArticle) {
+        ArticleService.update(article.id, this.currentArticle)
+          .then(() => {
+            this.fetchArticles();
+            this.currentArticle = null;
+          })
+          .catch(error => {
+            console.error('Erreur lors de la mise à jour de l\'article:', error);
+          });
+      } else {
+        ArticleService.create(this.newArticle)
+          .then(() => {
+            this.fetchArticles();
+            this.newArticle = {
+              articleNom: '',
+              articleDescription: '',
+              categorie: '',
+              articlePrix: '',
+              articleQuantite: '',
+              imageUrl: ''
+            };
+          })
+          .catch(error => {
+            console.error('Erreur lors de la création de l\'article:', error);
+          });
+      }
+      article.editing = false;
+    },
+    confirmDelete(article) {
+      article.confirmDelete = true;
+    },
+    cancelDelete(article) {
+      article.confirmDelete = false;
+    },
+    deleteArticle(id) {
+      ArticleService.delete(id)
+        .then(() => {
+          this.fetchArticles();
+        })
+        .catch(error => {
+          console.error('Erreur lors de la suppression de l\'article:', error);
+        });
     }
-  },
-  created() {
-    this.fetchArticles();
   }
 };
 </script>

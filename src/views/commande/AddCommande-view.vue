@@ -38,6 +38,7 @@
 
 <script>
 import CommandeService from '@/services/CommandeService';
+import ArticleService from '@/services/ArticleService';
 
 export default {
   name: 'AddCommande',
@@ -55,7 +56,19 @@ export default {
       articles: [] // Assurez-vous de récupérer les articles à partir d'un service ou d'un store Vuex
     };
   },
+  created() {
+    // Assurez-vous de récupérer la liste des articles ici
+    this.fetchArticles();
+  },
   methods: {
+    async fetchArticles() {
+      try {
+        const response = await ArticleService.getAll(); // Assurez-vous d'importer ArticleService
+        this.articles = response.data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des articles :', error);
+      }
+    },
     async createCommande() {
       try {
         const response = await CommandeService.create(this.newCommande);

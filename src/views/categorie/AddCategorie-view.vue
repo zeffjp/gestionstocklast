@@ -3,19 +3,15 @@
     <h2>Ajouter une Catégorie d'Articles</h2>
     <form @submit.prevent="createCategorie" class="form-container">
       <div class="form-group">
-        <input type="text" id="nom" v-model="newCategorie.nom" class="form-control" placeholder="Nom" required>
+        <input type="text" v-model="newCategorie.categorieNom" class="form-control" placeholder="Nom de la catégorie" required>
       </div>
       <div class="form-group">
-        <textarea id="description" v-model="newCategorie.description" class="form-control" placeholder="Description"></textarea>
-      </div>
-      <div class="form-group">
-        <input type="number" id="Quantitearticle" v-model="newCategorie.Quantitearticle" class="form-control" placeholder="Quantité d'articles" required>
+        <textarea v-model="newCategorie.categorieDescription" class="form-control" placeholder="Description de la catégorie"></textarea>
       </div>
       <button type="submit" class="btn btn-primary w-100">Ajouter</button>
     </form>
   </div>
 </template>
-
 <script>
 import CategorieService from '@/services/CategorieService';
 
@@ -24,9 +20,8 @@ export default {
   data() {
     return {
       newCategorie: {
-        nom: '',
-        description: '',
-        Quantitearticle: ''
+        categorieNom: '',
+        categorieDescription: ''
       }
     };
   },
@@ -34,36 +29,35 @@ export default {
     async createCategorie() {
       try {
         const response = await CategorieService.create(this.newCategorie);
-        console.log('Nouvelle catégorie ajoutée :', response.data);
+        console.log('Réponse de création de catégorie :', response);
         this.newCategorie = {
-          nom: '',
-          description: '',
-          Quantitearticle: ''
+          categorieNom: '',
+          categorieDescription: ''
         };
-        this.$router.push('/categorie-article/liste');
+        this.$router.push('/categorie/ListeCategorie-view');
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la catégorie :', error);
+        // Gérer l'erreur ici, par exemple afficher un message à l'utilisateur
       }
     }
   }
 };
 </script>
-
 <style scoped>
 .add-categorie {
   width: 100%;
   max-width: 600px;
   margin: 50px auto;
   padding: 30px;
-  background-color: #f0f0f0; /* Couleur de fond sombre */
+  background-color: #f0f0f0;
   border-radius: 10px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   font-family: 'Orbitron', sans-serif;
-  color: #fff; /* Couleur de texte clair */
+  color: #333;
 }
 
 h2 {
-  color: #3a4545; /* Couleur du titre */
+  color: #3a4545;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -73,27 +67,25 @@ h2 {
 }
 
 input[type="text"],
-textarea,
-input[type="number"] {
+textarea {
   width: 100%;
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc; /* Bordure légère */
+  border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #fff; /* Fond blanc */
-  color: #333; /* Couleur de texte principale */
+  background-color: #fff;
+  color: #333;
 }
 
 input[type="text"]:focus,
-textarea:focus,
-input[type="number"]:focus {
+textarea:focus {
   outline: none;
-  border-color: #555; /* Couleur de bordure au focus */
+  border-color: #555;
 }
 
 button[type="submit"] {
-  background-color: #007bff; /* Bleu pour le bouton */
-  color: #fff; /* Texte blanc */
+  background-color: #007bff;
+  color: #fff;
   border: none;
   padding: 10px;
   border-radius: 4px;
@@ -102,6 +94,6 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #0056b3; /* Variation de bleu au survol */
+  background-color: #0056b3;
 }
 </style>

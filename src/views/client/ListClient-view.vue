@@ -13,36 +13,41 @@
             <th>Nom</th>
             <th>Prénom</th>
             <th>Email</th>
+            <th>Adresse</th>
             <th>Téléphone</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <!-- Affichage des clients filtrés -->
-          <tr v-for="client in filteredClients" :key="client.id">
+          <tr v-for="client in filteredClients" :key="client.clientId">
             <td>
-              <template v-if="!client.editing">{{ client.nom }}</template>
-              <input v-model="client.nom" v-else class="form-control">
+              <template v-if="!client.editing">{{ client.clientNom }}</template>
+              <input v-model="client.clientNom" v-else class="form-control">
             </td>
             <td>
-              <template v-if="!client.editing">{{ client.prenom }}</template>
-              <input v-model="client.prenom" v-else class="form-control">
+              <template v-if="!client.editing">{{ client.clientPrénom }}</template>
+              <input v-model="client.clientPrénom" v-else class="form-control">
             </td>
             <td>
-              <template v-if="!client.editing">{{ client.email }}</template>
-              <input v-model="client.email" v-else class="form-control">
+              <template v-if="!client.editing">{{ client.clientEmail }}</template>
+              <input v-model="client.clientEmail" v-else class="form-control">
             </td>
             <td>
-              <template v-if="!client.editing">{{ client.telephone }}</template>
-              <input v-model="client.telephone" v-else class="form-control">
+              <template v-if="!client.editing">{{ client.clientAdresse }}</template>
+              <input v-model="client.clientAdresse" v-else class="form-control">
+            </td>
+            <td>
+              <template v-if="!client.editing">{{ client.clientTelephone }}</template>
+              <input v-model="client.clientTelephone" v-else class="form-control">
             </td>
             <td>
               <template v-if="!client.editing">
                 <button @click="editClient(client)" class="btn btn-sm btn-primary">Modifier</button>
                 <button @click="confirmDelete(client)" class="btn btn-sm btn-danger">Supprimer</button>
                 <span v-if="client.confirmDelete">
-                  Confirmer ? 
-                  <button @click="deleteClient(client)" class="btn btn-sm btn-danger">Oui</button> 
+                  Confirmer ?
+                  <button @click="deleteClient(client)" class="btn btn-sm btn-danger">Oui</button>
                   <button @click="cancelDelete(client)" class="btn btn-sm btn-secondary">Non</button>
                 </span>
               </template>
@@ -54,11 +59,11 @@
           </tr>
           <!-- Si aucun résultat ne correspond à la recherche -->
           <tr v-if="filteredClients.length === 0 && searchQuery !== ''">
-            <td colspan="5" style="text-align: center;">Aucun résultat trouvé.</td>
+            <td colspan="6" style="text-align: center;">Aucun résultat trouvé.</td>
           </tr>
           <!-- Afficher un message si tous les clients sont visibles -->
           <tr v-if="!searchQuery && clients.length > 0 && filteredClients.length === clients.length">
-            <td colspan="5" style="text-align: center;">Affichage de tous les clients.</td>
+            <td colspan="6" style="text-align: center;">Affichage de tous les clients.</td>
           </tr>
         </tbody>
       </table>
@@ -93,11 +98,11 @@ export default {
       }
     },
     async deleteClient(client) {
-      const clientId = client.id;
+      const clientId = client.clientId;
       try {
         await ClientService.delete(clientId);
-        this.clients = this.clients.filter(c => c.id !== clientId);
-        this.filteredClients = this.filteredClients.filter(c => c.id !== clientId);
+        this.clients = this.clients.filter(c => c.clientId !== clientId);
+        this.filteredClients = this.filteredClients.filter(c => c.clientId !== clientId);
       } catch (error) {
         console.error('Erreur lors de la suppression du client :', error);
       }
@@ -113,9 +118,9 @@ export default {
     },
     async saveClient(client) {
       try {
-        await ClientService.update(client.id, client);
+        await ClientService.update(client.clientId, client);
         client.editing = false;
-        const index = this.clients.findIndex(c => c.id === client.id);
+        const index = this.clients.findIndex(c => c.clientId === client.clientId);
         if (index !== -1) {
           this.clients[index] = { ...client };
           this.filteredClients = [...this.clients];
@@ -133,10 +138,10 @@ export default {
         this.filteredClients = [...this.clients];
       } else {
         this.filteredClients = this.clients.filter(client =>
-          client.nom.toLowerCase().includes(query) ||
-          client.prenom.toLowerCase().includes(query) ||
-          client.email.toLowerCase().includes(query) ||
-          client.telephone.includes(query)
+          client.clientNom.toLowerCase().includes(query) ||
+          client.clientPrénom.toLowerCase().includes(query) ||
+          client.clientEmail.toLowerCase().includes(query) ||
+          client.clientTelephone.includes(query)
         );
       }
     }

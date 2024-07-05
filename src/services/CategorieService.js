@@ -1,26 +1,30 @@
-
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/categories';
+const axiosConfig = {
+  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true
+};
 
-export default {
+const CategorieService = {
   getAll() {
-    return axios.get(API_URL);
+    return axios.get('http://localhost:8080/api/categories', axiosConfig);
   },
 
   getById(id) {
-    return axios.get(`${API_URL}/${id}`);
+    return axios.get(`http://localhost:8080/api/categories/${id}`, axiosConfig);
   },
 
-  create(categorieData) {
-    return axios.post(API_URL, categorieData);
+  create(data) {
+    return axios.post('http://localhost:8080/api/categories', data, axiosConfig);
   },
 
-  update(id, categorieData) {
-    return axios.put(`${API_URL}/${id}`, categorieData);
+  update(id, data) {
+    return axios.put(`http://localhost:8080/api/categories/${id}`, data, axiosConfig);
   },
 
   delete(id) {
-    return axios.delete(`${API_URL}/${id}`);
+    return axios.delete(`http://localhost:8080/api/categories/${id}`, axiosConfig);
   }
 };
+
+export default CategorieService;

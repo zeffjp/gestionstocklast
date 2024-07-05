@@ -3,19 +3,19 @@
     <h2>Ajouter une Vente</h2>
     <form @submit.prevent="createVente">
       <div class="form-group">
-        <input type="text" v-model="newVente.numero" class="form-control" placeholder="Numéro de vente" required>
+        <input type="text" v-model="newVente.client.nom" class="form-control" placeholder="Client" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newVente.client" class="form-control" placeholder="Client" required>
+        <input type="text" v-model="newVente.articleVendu.nom" class="form-control" placeholder="Article Vendu" required>
       </div>
       <div class="form-group">
-        <input type="date" v-model="newVente.date" class="form-control" placeholder="Date de vente" required>
+        <input type="date" v-model="newVente.date" class="form-control" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newVente.quantiteVendue" class="form-control" placeholder="Quantité Vendue (ex: 100 unités)" required>
+        <input type="number" v-model="newVente.quantiteVendue" class="form-control" placeholder="Quantité Vendue" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newVente.prixTotal" class="form-control" placeholder="Prix Total (ex: 500 EUR)" required>
+        <input type="number" v-model="newVente.prixTotal" class="form-control" placeholder="Prix Total" required>
       </div>
       <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
@@ -30,12 +30,16 @@ export default {
   data() {
     return {
       newVente: {
-        numero: '',
-        client: '',
+        client: {
+          nom: '',
+        },
+        articleVendu: {
+          nom: '',
+        },
         date: '',
         quantiteVendue: '',
-        prixTotal: ''
-      }
+        prixTotal: '',
+      },
     };
   },
   methods: {
@@ -46,23 +50,26 @@ export default {
 
         // Réinitialisation du formulaire après ajout
         this.newVente = {
-          numero: '',
-          client: '',
+          client: {
+            nom: '',
+          },
+          articleVendu: {
+            nom: '',
+          },
           date: '',
           quantiteVendue: '',
-          prixTotal: ''
+          prixTotal: '',
         };
 
         // Redirection vers la liste des ventes après ajout
-        this.$router.push('/vente/liste');
+        this.$router.push('/ventes');
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la vente :', error);
       }
-    }
-  }
+    },
+  },
 };
 </script>
-
 <style scoped>
 .add-vente {
   width: 100%;

@@ -24,15 +24,15 @@
       <tbody>
         <!-- Affichage des ventes filtrées -->
         <tr v-for="vente in filteredVentes" :key="vente.id">
-          <td>{{ vente.client }}</td>
+          <td>{{ vente.client.clientNom }} {{ vente.client.clientPrenom }}</td>
           <td>{{ formatDate(vente.date) }}</td>
-          <td>{{ vente.article }}</td>
+          <td>{{ vente.articleVendu.articleNom }}</td>
           <td
             contenteditable
-            @blur="updateVente(vente.id, 'quantite', $event.target.textContent)"
+            @blur="updateVente(vente.id, 'quantiteVendue', $event.target.textContent)"
             :class="{ 'editable': vente.editMode && vente.id === editedVenteId }"
           >
-            {{ vente.quantite }}
+            {{ vente.quantiteVendue }}
           </td>
           <td>{{ vente.prixTotal }}</td>
           <td>
@@ -135,8 +135,8 @@ export default {
         this.filteredVentes = [...this.ventes];
       } else {
         this.filteredVentes = this.ventes.filter(vente =>
-          vente.client.toLowerCase().includes(query) ||
-          vente.article.toLowerCase().includes(query) ||
+          vente.client.clientNom.toLowerCase().includes(query) ||
+          vente.articleVendu.articleNom.toLowerCase().includes(query) ||
           vente.numero.toLowerCase().includes(query)
         );
       }

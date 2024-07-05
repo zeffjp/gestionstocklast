@@ -88,7 +88,7 @@ export default {
 .home {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -106,7 +106,7 @@ export default {
 }
 
 .nav-links ul li {
-  margin: 10px 0;
+  margin: 40px 0;
 }
 
 .nav-link {
@@ -132,7 +132,7 @@ export default {
 }
 
 .expand-btn:hover {
-  color: #1e1e9d;
+  color: #5f5f71;
 }
 
 .sub-menu {

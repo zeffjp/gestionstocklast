@@ -1,7 +1,7 @@
 <template>
   <div class="categorie-list">
     <h2>Liste des Catégories d'Articles</h2>
-    
+
     <!-- Champ de recherche -->
     <input type="text" v-model="searchQuery" placeholder="Rechercher" @input="filterCategories" class="form-control mb-3">
 
@@ -11,45 +11,40 @@
         <tr>
           <th>Nom</th>
           <th>Description</th>
-          <th>Quantité référence (Article)</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="categorie in filteredCategories" :key="categorie.id">
+        <tr v-for="categorie in filteredCategories" :key="categorie.categorieId">
           <td>
-            <template v-if="!categorie.editing">{{ categorie.nom }}</template>
-            <input v-model="categorie.nom" v-else class="form-control">
+            <template v-if="!categorie.editing">{{ categorie.categorieNom }}</template>
+            <input v-model="categorie.categorieNom" v-else class="form-control">
           </td>
           <td>
-            <template v-if="!categorie.editing">{{ categorie.description }}</template>
-            <input v-model="categorie.description" v-else class="form-control">
-          </td>
-          <td>
-            <template v-if="!categorie.editing">{{ categorie.quantite_reference }}</template>
-            <input v-model="categorie.quantite_reference" v-else class="form-control">
+            <template v-if="!categorie.editing">{{ categorie.categorieDescription }}</template>
+            <input v-model="categorie.categorieDescription" v-else class="form-control">
           </td>
           <td>
             <template v-if="!categorie.editing">
-              <button @click="editCategorie(categorie)">Modifier</button>
-              <button @click="confirmDelete(categorie)">Supprimer</button>
+              <button @click="editCategorie(categorie)" class="btn-edit">Modifier</button>
+              <button @click="confirmDelete(categorie)" class="btn-delete">Supprimer</button>
               <span v-if="categorie.confirmDelete">
-                Confirmer ? <button @click="deleteCategorie(categorie.id)">Oui</button> <button @click="cancelDelete(categorie)">Non</button>
+                Confirmer ? <button @click="deleteCategorie(categorie.categorieId)" class="btn-confirm">Oui</button> <button @click="cancelDelete(categorie)" class="btn-cancel">Non</button>
               </span>
             </template>
             <template v-else>
-              <button @click="saveCategorie(categorie)">Enregistrer</button>
-              <button @click="cancelEdit(categorie)">Annuler</button>
+              <button @click="saveCategorie(categorie)" class="btn-save">Enregistrer</button>
+              <button @click="cancelEdit(categorie)" class="btn-cancel">Annuler</button>
             </template>
           </td>
         </tr>
         <!-- Si aucun résultat ne correspond à la recherche -->
         <tr v-if="filteredCategories.length === 0 && searchQuery !== ''">
-          <td colspan="4" style="text-align: center;">Aucun résultat trouvé.</td>
+          <td colspan="3" style="text-align: center;">Aucun résultat trouvé.</td>
         </tr>
         <!-- Afficher un message si toutes les catégories sont visibles -->
         <tr v-if="!searchQuery && categories.length > 0 && filteredCategories.length === categories.length">
-          <td colspan="4" style="text-align: center;">Affichage de toutes les catégories.</td>
+          <td colspan="3" style="text-align: center;">Affichage de toutes les catégories.</td>
         </tr>
       </tbody>
     </table>
@@ -62,12 +57,35 @@ import CategorieService from '@/services/CategorieService';
 export default {
   name: 'ListCategorie',
   data() {
-    return {
-      categories: [],
-      filteredCategories: [],
-      searchQuery: '',
-    };
-  },
+  return {
+    categories: [
+      {
+        categorieId: 1,
+        categorieNom: 'Catégorie A',
+        categorieDescription: 'Description de la catégorie A',
+        editing: false,
+        confirmDelete: false
+      },
+      {
+        categorieId: 2,
+        categorieNom: 'Catégorie B',
+        categorieDescription: 'Description de la catégorie B',
+        editing: false,
+        confirmDelete: false
+      },
+      {
+        categorieId: 3,
+        categorieNom: 'Catégorie C',
+        categorieDescription: 'Description de la catégorie C',
+        editing: false,
+        confirmDelete: false
+      }
+    ],
+    filteredCategories: [],
+    searchQuery: ''
+  };
+},
+
   created() {
     this.fetchCategories();
   },
@@ -88,8 +106,8 @@ export default {
     async deleteCategorie(categorieId) {
       try {
         await CategorieService.delete(categorieId);
-        this.categories = this.categories.filter(categorie => categorie.id !== categorieId);
-        this.filteredCategories = this.filteredCategories.filter(categorie => categorie.id !== categorieId);
+        this.categories = this.categories.filter(categorie => categorie.categorieId !== categorieId);
+        this.filteredCategories = this.filteredCategories.filter(categorie => categorie.categorieId !== categorieId);
       } catch (error) {
         console.error('Erreur lors de la suppression de la catégorie :', error);
       }
@@ -105,9 +123,9 @@ export default {
     },
     async saveCategorie(categorie) {
       try {
-        await CategorieService.update(categorie.id, categorie);
+        await CategorieService.update(categorie.categorieId, categorie);
         categorie.editing = false;
-        const index = this.categories.findIndex(c => c.id === categorie.id);
+        const index = this.categories.findIndex(c => c.categorieId === categorie.categorieId);
         if (index !== -1) {
           this.categories[index] = { ...categorie };
           this.filteredCategories = [...this.categories];
@@ -125,8 +143,8 @@ export default {
         this.filteredCategories = [...this.categories];
       } else {
         this.filteredCategories = this.categories.filter(categorie =>
-          categorie.nom.toLowerCase().includes(query) ||
-          categorie.description.toLowerCase().includes(query)
+          categorie.categorieNom.toLowerCase().includes(query) ||
+          categorie.categorieDescription.toLowerCase().includes(query)
         );
       }
     }
@@ -172,19 +190,18 @@ td {
   color: rgb(15, 16, 16);
 }
 
-button {
+.btn-edit, .btn-delete, .btn-save, .btn-cancel, .btn-confirm {
   padding: 5px 10px;
-  background-color: rgb(153, 171, 171);
-  color: #000;
+  background-color: #3498db; /* Couleur bleue */
+  color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
 }
 
-button:hover {
-  background-color: rgb(116, 116, 135);
-  color: #fff;
+.btn-edit:hover, .btn-delete:hover, .btn-save:hover, .btn-cancel:hover, .btn-confirm:hover {
+  background-color: #2980b9; /* Couleur bleue plus sombre au survol */
 }
 
 input[type="text"] {
@@ -193,7 +210,7 @@ input[type="text"] {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 0px;
-  width: 100%; /* Ajout de cette ligne pour étendre le champ de recherche */
+  width: 100%;
 }
 
 input[type="text"]::placeholder {

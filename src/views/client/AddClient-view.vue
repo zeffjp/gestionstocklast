@@ -3,16 +3,19 @@
     <h2>Ajouter un Client</h2>
     <form @submit.prevent="createClient" class="form-container">
       <div class="form-group">
-        <input type="text" v-model="newClient.nom" class="form-control" placeholder="Nom" required>
+        <input type="text" v-model="newClient.clientNom" class="form-control" placeholder="Nom" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newClient.prenom" class="form-control" placeholder="Prénom" required>
+        <input type="text" v-model="newClient.clientPrenom" class="form-control" placeholder="Prénom" required>
       </div>
       <div class="form-group">
-        <input type="email" v-model="newClient.email" class="form-control" placeholder="Email" required>
+        <input type="email" v-model="newClient.clientEmail" class="form-control" placeholder="Email" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newClient.telephone" class="form-control" placeholder="Téléphone" required>
+        <input type="text" v-model="newClient.clientAdresse" class="form-control" placeholder="Adresse" required>
+      </div>
+      <div class="form-group">
+        <input type="text" v-model="newClient.clientTelephone" class="form-control" placeholder="Téléphone" required>
       </div>
       <button type="submit" class="btn btn-primary w-100">Ajouter</button>
     </form>
@@ -27,10 +30,11 @@ export default {
   data() {
     return {
       newClient: {
-        nom: '',
-        prenom: '',
-        email: '',
-        telephone: ''
+        clientNom: '',
+        clientPrenom: '',
+        clientEmail: '',
+        clientAdresse: '',
+        clientTelephone: ''
       }
     };
   },
@@ -38,14 +42,19 @@ export default {
     async createClient() {
       try {
         const response = await ClientService.create(this.newClient);
-        console.log('Nouveau client ajouté :', response.data);
-        this.newClient = {
-          nom: '',
-          prenom: '',
-          email: '',
-          telephone: ''
-        };
-        this.$router.push('/clients/liste');
+        if (response && response.data) {
+          console.log('Nouveau client ajouté :', response.data);
+          this.newClient = {
+            clientNom: '',
+            clientPrenom: '',
+            clientEmail: '',
+            clientAdresse: '',
+            clientTelephone: ''
+          };
+          this.$router.push('/clients/liste');
+        } else {
+          console.error('Réponse inattendue lors de l\'ajout du client :', response);
+        }
       } catch (error) {
         console.error('Erreur lors de l\'ajout du client :', error);
       }

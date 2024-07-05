@@ -3,19 +3,25 @@
     <h2>Ajouter un Article</h2>
     <form @submit.prevent="createArticle">
       <div class="form-group">
-        <input type="text" v-model="newArticle.nom" class="form-control" placeholder="Nom" required>
+        <input type="text" v-model="newArticle.articleNom" class="form-control" placeholder="Nom" required>
       </div>
       <div class="form-group">
-        <textarea type="text" v-model="newArticle.description" class="form-control" placeholder="Description" required></textarea>  
+        <textarea v-model="newArticle.articleDescription" class="form-control" placeholder="Description" required></textarea>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newArticle.categorie" class="form-control" placeholder="Categorie" required>
+        <input type="number" v-model="newArticle.articlePrix" class="form-control" placeholder="Prix" required>
       </div>
       <div class="form-group">
-        <input type="number" v-model="newArticle.prix" class="form-control" placeholder="Prix" required>
+        <input type="number" v-model="newArticle.articleQuantite" class="form-control" placeholder="Quantité en Stock" required>
       </div>
       <div class="form-group">
-        <input type="number" v-model="newArticle.quantiteenstock" class="form-control" placeholder="Quantite en Stock" required>
+        <input type="number" v-model="newArticle.categorieId" class="form-control" placeholder="ID de Catégorie" required>
+      </div>
+      <div class="form-group">
+        <label for="articleImage">Image de l'Article</label>
+        <input id="articleImage" type="file" @change="handleImageUpload" accept="image/*">
+        <!-- Aperçu de l'image sélectionnée -->
+        <img v-if="newArticle.imagePreview" :src="newArticle.imagePreview" alt="Aperçu de l'image" style="max-width: 200px; margin-top: 10px;">
       </div>
       <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
@@ -30,28 +36,53 @@ export default {
   data() {
     return {
       newArticle: {
-        nom: '',
-        description: '',
-        categorie: '',
-        prix: null,
-        quantiteenstock: null
+        articleNom: '',
+        articleDescription: '',
+        articlePrix: null,
+        articleQuantite: null,
+        categorieId: null,
+        imageFile: null, // Fichier de l'image à envoyer au serveur
+        imagePreview: null // Aperçu de l'image pour l'utilisateur
       }
     };
   },
   methods: {
     async createArticle() {
       try {
+        // Upload de l'image si présente
+        if (this.newArticle.imageFile) {
+          // Code pour uploader l'image vers votre serveur
+          // Vous devrez implémenter cette fonctionnalité dans ArticleService.create
+          // Exemple : const imageUrl = await ArticleService.uploadImage(this.newArticle.imageFile);
+          // Puis ajouter imageUrl dans this.newArticle
+          this.newArticle.imageUrl = URL.createObjectURL(this.newArticle.imageFile);
+        }
+
+        // Création de l'article
         const response = await ArticleService.create(this.newArticle);
         console.log('Nouvel article ajouté :', response.data);
+
+        // Réinitialisation du formulaire
         this.newArticle = {
-          nom: '',
-          description: '',
-          prix: null
+          articleNom: '',
+          articleDescription: '',
+          articlePrix: null,
+          articleQuantite: null,
+          categorieId: null,
+          imageFile: null,
+          imagePreview: null
         };
+
+        // Redirection vers la liste des articles par exemple
         this.$router.push('/articles');
       } catch (error) {
         console.error('Erreur lors de l\'ajout de l\'article :', error);
       }
+    },
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      this.newArticle.imageFile = file;
+      this.newArticle.imagePreview = URL.createObjectURL(file); // Aperçu de l'image
     }
   }
 };
@@ -63,15 +94,15 @@ export default {
   max-width: 600px;
   margin: auto;
   padding: 20px;
-  background-color: #f0f0f0; /* Couleur de fond légère */
+  background-color: #f0f0f0;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Légère ombre */
-  font-family: 'Roboto', sans-serif; /* Police de caractères */
-  color: #333; /* Couleur de texte principale */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+  color: #333;
 }
 
 h2 {
-  color: #444; /* Couleur du titre */
+  color: #444;
   text-align: center;
 }
 
@@ -85,28 +116,30 @@ form {
 }
 
 input[type="text"],
-input[type="date"],
-input[type="number"] {
+textarea,
+input[type="number"],
+input[type="file"] {
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc; /* Bordure légère */
+  border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #fff; /* Fond blanc */
-  color: #333; /* Couleur de texte principale */
+  background-color: #fff;
+  color: #333;
 }
 
 input[type="text"]:focus,
-input[type="date"]:focus,
-input[type="number"]:focus {
+textarea:focus,
+input[type="number"]:focus,
+input[type="file"]:focus {
   outline: none;
-  border-color: #555; /* Couleur de bordure au focus */
+  border-color: #555;
 }
 
 button {
   align-self: flex-end;
   padding: 10px 50px;
-  background-color: #007bff; /* Bleu pour le bouton */
-  color: #fff; /* Texte blanc */
+  background-color: #007bff;
+  color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -114,6 +147,6 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3; /* Variation de bleu au survol */
+  background-color: #0056b3;
 }
 </style>

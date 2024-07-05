@@ -208,7 +208,7 @@ td {
 }
 
 button {
-  padding: px 12px;
+  padding: 8px 12px;
   background-color: #99abab;
   color: #000;
   border: none;
