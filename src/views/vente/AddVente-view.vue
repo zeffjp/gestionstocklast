@@ -45,10 +45,10 @@ export default {
   methods: {
     async create() {
       try {
-        const response = await VenteService.create(this.newVente);
+        const response = await VenteService.createVente(this.newVente);
         console.log('Nouvelle vente ajoutée :', response.data);
         alert('Vente ajoutée avec succès!');
-        this.$router.push('/commande/ListVente-view');
+        this.$router.push('/ventes/list'); // Assurez-vous que cette route existe dans votre configuration de routage
         this.resetForm();
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la vente :', error);

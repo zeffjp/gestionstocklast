@@ -29,21 +29,22 @@ export default {
   methods: {
     async createCategorie() {
       try {
-        const response = await CategorieService.create(this.newCategorie);
+        const response = await CategorieService.createCategorie(this.newCategorie);
         console.log('Réponse de création de catégorie :', response);
         this.newCategorie = {
           categorieNom: '',
           categorieDescription: ''
         };
-        this.$router.push('/categories'); // Replace with correct route path
+        this.$router.push('/categories'); // Redirige vers la liste des catégories après création
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la catégorie :', error);
-        // Handle error, e.g., show an error message to the user
+        // Gérer l'erreur ici (ex: affichage d'un message d'erreur à l'utilisateur)
       }
     }
   }
 };
 </script>
+
 <style scoped>
 .add-categorie {
   width: 100%;

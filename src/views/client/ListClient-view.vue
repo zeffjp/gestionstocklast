@@ -1,25 +1,31 @@
 <template>
   <div class="client-list">
     <h2>Liste des Clients</h2>
+
+    <!-- Tableau des clients -->
     <div class="table-responsive">
-      <table>
+      <table class="table table-striped">
         <thead>
           <tr>
             <th>Nom</th>
             <th>Prénom</th>
             <th>Email</th>
             <th>Téléphone</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="clients.length === 0">
-            <td colspan="4" class="no-data">Aucun client trouvé.</td>
+            <td colspan="5" class="no-data">Aucun client trouvé.</td>
           </tr>
           <tr v-else v-for="client in clients" :key="client.clientId" class="client-row">
             <td>{{ client.clientNom }}</td>
             <td>{{ client.clientPrenom }}</td>
             <td>{{ client.clientEmail }}</td>
             <td>{{ client.clientTelephone }}</td>
+            <td>
+              <!-- Actions à ajouter ici si nécessaire -->
+            </td>
           </tr>
         </tbody>
       </table>
@@ -43,11 +49,11 @@ export default {
   methods: {
     async fetchClients() {
       try {
-        const response = await ClientService.getAll();
+        const response = await ClientService.getAllClients();
         this.clients = response.data;
       } catch (error) {
         console.error('Erreur lors du chargement des clients :', error);
-        // Afficher un message d'erreur ou gérer l'erreur de manière appropriée
+        alert('Une erreur s\'est produite lors du chargement des clients.');
       }
     }
   }
@@ -58,10 +64,10 @@ export default {
 .client-list {
   background-color: #f0f0f0;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(118, 122, 122, 0.2);
   font-family: 'Orbitron', sans-serif;
-  color: #000;
+  color: rgb(60, 67, 67);
 }
 
 h2 {
@@ -71,37 +77,34 @@ h2 {
 }
 
 .table-responsive {
-  overflow-x: auto;
+  margin-top: 20px;
 }
 
-table {
+.table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-th, td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
+.table th {
   background-color: #b6c7d9;
   color: #fff;
   font-weight: bold;
+  text-align: center;
+  padding: 12px;
 }
 
-tr:nth-child(even) {
+.table td {
+  text-align: center;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
   background-color: rgba(0, 0, 0, 0.05);
-}
-
-td {
-  color: #0f0d0d;
 }
 
 .no-data {

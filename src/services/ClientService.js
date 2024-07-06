@@ -8,23 +8,23 @@ const axiosConfig = {
 };
 
 const ClientService = {
-  getAll() {
+  getAllClients() {
     return axios.get(API_URL, axiosConfig);
   },
 
-  getById(id) {
+  getClientById(id) {
     return axios.get(`${API_URL}/${id}`, axiosConfig);
   },
 
-  create(clientData) {
+  createClient(clientData) {
     return axios.post(API_URL, clientData, axiosConfig);
   },
 
-  update(id, clientData) {
+  updateClient(id, clientData) {
     return axios.put(`${API_URL}/${id}`, clientData, axiosConfig);
   },
 
-  delete(id) {
+  deleteClient(id) {
     return axios.delete(`${API_URL}/${id}`, axiosConfig);
   }
 };

@@ -8,23 +8,23 @@ const axiosConfig = {
 };
 
 const VenteService = {
-  getAll() {
+  getAllVentes() {
     return axios.get(API_URL, axiosConfig);
   },
 
-  getById(id) {
+  getVenteById(id) {
     return axios.get(`${API_URL}/${id}`, axiosConfig);
   },
 
-  create(venteData) {
+  createVente(venteData) {
     return axios.post(API_URL, venteData, axiosConfig);
   },
 
-  update(venteId, venteData) {
+  updateVente(venteId, venteData) {
     return axios.put(`${API_URL}/${venteId}`, venteData, axiosConfig);
   },
 
-  delete(venteId) {
+  deleteVente(venteId) {
     return axios.delete(`${API_URL}/${venteId}`, axiosConfig);
   }
 };

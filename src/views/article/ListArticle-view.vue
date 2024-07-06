@@ -54,7 +54,7 @@ export default {
   methods: {
     async fetchArticles() {
       try {
-        const response = await ArticleService.getAll();
+        const response = await ArticleService.getAllArticles();
         this.articles = response.data.map(article => ({
           ...article,
           imageUrl: article.imageUrl || '' // Assurez-vous que imageUrl est défini ou utilisez une valeur par défaut

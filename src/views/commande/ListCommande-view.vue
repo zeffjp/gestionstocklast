@@ -17,15 +17,15 @@
       <tbody>
         <tr v-for="commande in commandes" :key="commande.commandeNumero" class="commande-row">
           <td>{{ commande.commandeNumero }}</td>
-          <td>{{ commande.client.nom }}</td> <!-- Assurez-vous que client.nom est correct -->
+          <td>{{ commande.client.nom }}</td>
           <td>{{ formatDate(commande.commandeDate) }}</td>
-          <td>{{ commande.article.nom }}</td> <!-- Assurez-vous que article.nom est correct -->
+          <td>{{ commande.article.nom }}</td>
           <td>{{ commande.commandeQuantite }}</td>
           <td>{{ commande.commandePrixtotal }}</td>
           <td>{{ commande.commandeStatut }}</td>
           <td>
             <router-link :to="'/commande/edit/' + commande.commandeNumero" class="btn btn-info">Modifier</router-link>
-            <button @click="delete(commande.commandeNumero)" class="btn btn-danger">Supprimer</button>
+            <button @click="deleteCommande(commande.commandeNumero)" class="btn btn-danger">Supprimer</button>
           </td>
         </tr>
         <!-- Si aucune commande n'est trouvée -->
@@ -53,15 +53,15 @@ export default {
   methods: {
     async fetchCommandes() {
       try {
-        const response = await CommandeService.getAll();
+        const response = await CommandeService.getAllCommandes();
         this.commandes = response.data;
       } catch (error) {
         console.error('Erreur lors du chargement des commandes :', error);
       }
     },
-    async delete(commandeNumero) {
+    async deleteCommande(commandeNumero) {
       try {
-        await CommandeService.delete(commandeNumero);
+        await CommandeService.deleteCommande(commandeNumero);
         this.commandes = this.commandes.filter(commande => commande.commandeNumero !== commandeNumero);
         console.log('Commande supprimée avec succès.');
       } catch (error) {

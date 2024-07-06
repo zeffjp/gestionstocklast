@@ -8,24 +8,20 @@ const axiosConfig = {
 };
 
 const CommandeService = {
-  getAll() {
+  getAllCommandes() {
     return axios.get(API_URL, axiosConfig);
   },
 
-  getById(id) {
+  getCommandeById(id) {
     return axios.get(`${API_URL}/${id}`, axiosConfig);
   },
 
-  create(commandeData) {
+  createCommande(commandeData) {
     return axios.post(API_URL, commandeData, axiosConfig);
   },
 
-  update(id, commandeData) {
+  deleteCommande(id, commandeData) {
     return axios.put(`${API_URL}/${id}`, commandeData, axiosConfig);
-  },
-
-  delete(id) {
-    return axios.delete(`${API_URL}/${id}`, axiosConfig);
   }
 };
 

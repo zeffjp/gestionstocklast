@@ -8,23 +8,23 @@ const axiosConfig = {
 };
 
 const ArticleService = {
-  getAll() {
+  getAllArticles() {
     return axios.get(API_URL, axiosConfig);
   },
 
-  getById(id) {
+  getArticleById(id) {
     return axios.get(`${API_URL}/${id}`, axiosConfig);
   },
 
-  create(articleData) {
+  createArticle(articleData) {
     return axios.post(API_URL, articleData, axiosConfig);
   },
 
-  update(id, articleData) {
+  updateArticle(id, articleData) {
     return axios.put(`${API_URL}/${id}`, articleData, axiosConfig);
   },
 
-  delete(id) {
+  deleteArticle(id) {
     return axios.delete(`${API_URL}/${id}`, axiosConfig);
   }
 };

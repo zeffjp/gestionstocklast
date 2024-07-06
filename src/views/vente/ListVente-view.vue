@@ -17,7 +17,7 @@
         </thead>
         <tbody>
           <!-- Affichage des ventes -->
-          <tr v-for="vente in ventes" :key="vente.venteId">
+          <tr v-for="vente in ventes" :key="vente.id">
             <td>{{ vente.client.nom }}</td>
             <td>{{ vente.articleVendu.nom }}</td>
             <td>{{ formatDate(vente.date) }}</td>
@@ -25,7 +25,7 @@
             <td>{{ vente.prixTotal }}</td>
             <td>
               <button @click="editVente(vente)" class="btn btn-sm btn-primary">Modifier</button>
-              <button @click="deleteVente(vente.venteId)" class="btn btn-sm btn-danger">Supprimer</button>
+              <button @click="deleteVente(vente.id)" class="btn btn-sm btn-danger">Supprimer</button>
             </td>
           </tr>
           <!-- Si aucune vente n'est trouvée -->
@@ -54,7 +54,7 @@ export default {
   methods: {
     async fetchVentes() {
       try {
-        const response = await VenteService.getAll();
+        const response = await VenteService.getAllVentes();
         this.ventes = response.data.map(vente => ({
           ...vente,
           date: new Date(vente.date)
@@ -65,8 +65,8 @@ export default {
     },
     async deleteVente(venteId) {
       try {
-        await VenteService.delete(venteId);
-        this.ventes = this.ventes.filter(vente => vente.venteId !== venteId);
+        await VenteService.deleteVente(venteId);
+        this.ventes = this.ventes.filter(vente => vente.id !== venteId);
         alert('Vente supprimée avec succès!');
       } catch (error) {
         console.error('Erreur lors de la suppression de la vente :', error);
@@ -75,7 +75,7 @@ export default {
     },
     editVente(vente) {
       // Rediriger vers la page de modification de la vente
-      // Exemple: this.$router.push(`/ventes/${vente.venteId}/edit`);
+      // Exemple: this.$router.push(`/ventes/${vente.id}/edit`);
       console.log('Édition de la vente :', vente);
     },
     formatDate(date) {

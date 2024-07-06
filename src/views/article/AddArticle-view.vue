@@ -3,13 +3,13 @@
     <h2>Ajouter un Article</h2>
     <form @submit.prevent="createArticle">
       <div class="form-group">
-        <input type="text" v-model="newArticle.articleNom" class="form-control" placeholder="Nom" required>
+        <input type="text" v-model="newArticle.articleNom" class="form-control" placeholder="Nom de l'article" required>
       </div>
       <div class="form-group">
-        <textarea v-model="newArticle.articleDescription" class="form-control" placeholder="Description" required></textarea>
+        <textarea v-model="newArticle.articleDescription" class="form-control" placeholder="Description de l'article" required></textarea>
       </div>
       <div class="form-group">
-        <input type="number" v-model="newArticle.articlePrix" class="form-control" placeholder="Prix" required>
+        <input type="number" v-model="newArticle.articlePrix" class="form-control" placeholder="Prix de l'article" required>
       </div>
       <div class="form-group">
         <input type="number" v-model="newArticle.articleQuantite" class="form-control" placeholder="Quantité en Stock" required>
@@ -51,15 +51,14 @@ export default {
       try {
         // Upload de l'image si présente
         if (this.newArticle.image) {
-          // Code pour uploader l'image vers votre serveur
-          // Vous devrez implémenter cette fonctionnalité dans ArticleService.create
+          // Implémenter le code pour uploader l'image vers votre serveur
           // Exemple : const imageUrl = await ArticleService.uploadImage(this.newArticle.imageFile);
           // Puis ajouter imageUrl dans this.newArticle
           this.newArticle.imageUrl = URL.createObjectURL(this.newArticle.image);
         }
 
         // Création de l'article
-        const response = await ArticleService.create(this.newArticle);
+        const response = await ArticleService.createArticle(this.newArticle);
         console.log('Nouvel article ajouté :', response.data);
 
         // Réinitialisation du formulaire

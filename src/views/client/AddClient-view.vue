@@ -41,7 +41,7 @@ export default {
   methods: {
     async createClient() {
       try {
-        const response = await ClientService.create(this.newClient);
+        const response = await ClientService.createClient(this.newClient);
         console.log('Nouveau client ajouté :', response.data);
         alert('Client ajouté avec succès!');
         this.resetForm();

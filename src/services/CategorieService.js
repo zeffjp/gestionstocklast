@@ -7,23 +7,23 @@ const axiosConfig = {
 };
 
 const CategorieService = {
-  getAll() {
+  getAllCategories() {
     return axios.get(API_URL, axiosConfig);
   },
 
-  getById(id) {
+  getCategorieById(id) {
     return axios.get(`${API_URL}/${id}`, axiosConfig);
   },
 
-  create(categorieData) {
+  createCategorie(categorieData) {
     return axios.post(API_URL, categorieData, axiosConfig);
   },
 
-  update(id, categorieData) {
+  updateCategorie(id, categorieData) {
     return axios.put(`${API_URL}/${id}`, categorieData, axiosConfig);
   },
 
-  delete(id) {
+  deleteCategorie(id) {
     return axios.delete(`${API_URL}/${id}`, axiosConfig);
   }
 };
