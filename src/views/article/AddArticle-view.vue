@@ -41,7 +41,7 @@ export default {
         articlePrix: null,
         articleQuantite: null,
         categorieId: null,
-        imageFile: null, // Fichier de l'image à envoyer au serveur
+        image: null, // Fichier de l'image à envoyer au serveur
         imagePreview: null // Aperçu de l'image pour l'utilisateur
       }
     };
@@ -50,12 +50,12 @@ export default {
     async createArticle() {
       try {
         // Upload de l'image si présente
-        if (this.newArticle.imageFile) {
+        if (this.newArticle.image) {
           // Code pour uploader l'image vers votre serveur
           // Vous devrez implémenter cette fonctionnalité dans ArticleService.create
           // Exemple : const imageUrl = await ArticleService.uploadImage(this.newArticle.imageFile);
           // Puis ajouter imageUrl dans this.newArticle
-          this.newArticle.imageUrl = URL.createObjectURL(this.newArticle.imageFile);
+          this.newArticle.imageUrl = URL.createObjectURL(this.newArticle.image);
         }
 
         // Création de l'article
@@ -69,7 +69,7 @@ export default {
           articlePrix: null,
           articleQuantite: null,
           categorieId: null,
-          imageFile: null,
+          image: null,
           imagePreview: null
         };
 
@@ -81,7 +81,7 @@ export default {
     },
     handleImageUpload(event) {
       const file = event.target.files[0];
-      this.newArticle.imageFile = file;
+      this.newArticle.image = file;
       this.newArticle.imagePreview = URL.createObjectURL(file); // Aperçu de l'image
     }
   }

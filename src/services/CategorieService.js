@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+const API_URL = 'http://localhost:8080/api/categories';
 const axiosConfig = {
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true
@@ -7,23 +8,23 @@ const axiosConfig = {
 
 const CategorieService = {
   getAll() {
-    return axios.get('http://localhost:8080/api/categories', axiosConfig);
+    return axios.get(API_URL, axiosConfig);
   },
 
   getById(id) {
-    return axios.get(`http://localhost:8080/api/categories/${id}`, axiosConfig);
+    return axios.get(`${API_URL}/${id}`, axiosConfig);
   },
 
-  create(data) {
-    return axios.post('http://localhost:8080/api/categories', data, axiosConfig);
+  create(articleData) {
+    return axios.post(API_URL, articleData, axiosConfig);
   },
 
-  update(id, data) {
-    return axios.put(`http://localhost:8080/api/categories/${id}`, data, axiosConfig);
+  update(id, articleData) {
+    return axios.put(`${API_URL}/${id}`, articleData, axiosConfig);
   },
 
   delete(id) {
-    return axios.delete(`http://localhost:8080/api/categories/${id}`, axiosConfig);
+    return axios.delete(`${API_URL}/${id}`, axiosConfig);
   }
 };
 

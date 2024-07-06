@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/articles';
+const API_URL = 'http://localhost:8080/api/clients';
 
 const axiosConfig = {
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true 
 };
 
-const ArticleService = {
+const ClientService = {
   getAll() {
     return axios.get(API_URL, axiosConfig);
   },
@@ -29,4 +29,4 @@ const ArticleService = {
   }
 };
 
-export default ArticleService;
+export default ClientService;

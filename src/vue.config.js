@@ -1,7 +1,7 @@
-// import { defineConfig } from '@vue/cli-service';
+import { defineConfig } from '@vue/cli-service';
 
-// export default defineConfig({
-//   devServer: {
-//     proxy: 'http://localhost:8080'
-//   }
-// });
+export default defineConfig({
+  devServer: {
+    proxy: 'http://localhost:8080'
+  }
+});

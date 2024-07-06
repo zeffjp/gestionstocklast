@@ -3,19 +3,19 @@
     <h2>Ajouter une Vente</h2>
     <form @submit.prevent="createVente">
       <div class="form-group">
-        <input type="text" v-model="newVente.client.nom" class="form-control" placeholder="Client" required>
+        <input type="text" v-model="newVente.client.nom" id="client" class="form-control" placeholder="Nom du client" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newVente.articleVendu.nom" class="form-control" placeholder="Article Vendu" required>
+        <input type="text" v-model="newVente.articleVendu.nom" id="article" class="form-control" placeholder="Nom de l'article" required>
       </div>
       <div class="form-group">
-        <input type="date" v-model="newVente.date" class="form-control" required>
+        <input type="date" v-model="newVente.date" id="date" class="form-control" required>
       </div>
       <div class="form-group">
-        <input type="number" v-model="newVente.quantiteVendue" class="form-control" placeholder="Quantité Vendue" required>
+        <input type="number" v-model.number="newVente.quantiteVendue" id="quantite" class="form-control" placeholder="Quantité Vendue" required>
       </div>
       <div class="form-group">
-        <input type="number" v-model="newVente.prixTotal" class="form-control" placeholder="Prix Total" required>
+        <input type="number" step="0.01" v-model.number="newVente.prixTotal" id="prix" class="form-control" placeholder="Prix Total" required>
       </div>
       <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
@@ -38,8 +38,8 @@ export default {
         },
         date: '',
         quantiteVendue: '',
-        prixTotal: '',
-      },
+        prixTotal: ''
+      }
     };
   },
   methods: {
@@ -47,44 +47,45 @@ export default {
       try {
         const response = await VenteService.create(this.newVente);
         console.log('Nouvelle vente ajoutée :', response.data);
-
-        // Réinitialisation du formulaire après ajout
-        this.newVente = {
-          client: {
-            nom: '',
-          },
-          articleVendu: {
-            nom: '',
-          },
-          date: '',
-          quantiteVendue: '',
-          prixTotal: '',
-        };
-
-        // Redirection vers la liste des ventes après ajout
-        this.$router.push('/ventes');
+        alert('Vente ajoutée avec succès!');
+        this.resetForm();
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la vente :', error);
+        alert('Erreur lors de l\'ajout de la vente. Veuillez réessayer.');
       }
     },
-  },
+    resetForm() {
+      this.newVente = {
+        client: {
+          nom: '',
+        },
+        articleVendu: {
+          nom: '',
+        },
+        date: '',
+        quantiteVendue: '',
+        prixTotal: ''
+      };
+    }
+  }
 };
 </script>
+
 <style scoped>
 .add-vente {
   width: 100%;
   max-width: 600px;
   margin: auto;
   padding: 20px;
-  background-color: #f0f0f0; /* Couleur de fond légère */
+  background-color: #f0f0f0;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Légère ombre */
-  font-family: 'Roboto', sans-serif; /* Police de caractères */
-  color: #333; /* Couleur de texte principale */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+  color: #333;
 }
 
 h2 {
-  color: #444; /* Couleur du titre */
+  color: #444;
   text-align: center;
 }
 
@@ -94,7 +95,12 @@ form {
 }
 
 .form-group {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 input[type="text"],
@@ -102,31 +108,32 @@ input[type="date"],
 input[type="number"] {
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc; /* Bordure légère */
+  border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #fff; /* Fond blanc */
-  color: #333; /* Couleur de texte principale */
+  background-color: #fff;
+  color: #333;
 }
 
 input[type="text"]:focus,
 input[type="date"]:focus,
 input[type="number"]:focus {
   outline: none;
-  border-color: #555; /* Couleur de bordure au focus */
+  border-color: #555;
 }
 
 button {
   align-self: flex-end;
   padding: 10px 50px;
-  background-color: #007bff; /* Bleu pour le bouton */
-  color: #fff; /* Texte blanc */
+  background-color: #007bff;
+  color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
+  margin-top: 10px;
 }
 
 button:hover {
-  background-color: #0056b3; /* Variation de bleu au survol */
+  background-color: #0056b3;
 }
 </style>

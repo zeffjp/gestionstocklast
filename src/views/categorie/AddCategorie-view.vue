@@ -12,6 +12,7 @@
     </form>
   </div>
 </template>
+
 <script>
 import CategorieService from '@/services/CategorieService';
 
@@ -34,7 +35,7 @@ export default {
           categorieNom: '',
           categorieDescription: ''
         };
-        this.$router.push('/categorie/ListeCategorie-view');
+        this.$router.push('.views/categorie/ListCategorie-view.vue');
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la catégorie :', error);
         // Gérer l'erreur ici, par exemple afficher un message à l'utilisateur

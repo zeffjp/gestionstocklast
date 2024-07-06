@@ -1,23 +1,20 @@
 <template>
-  <div class="add-client-container">
+  <div class="add-client">
     <h2>Ajouter un Client</h2>
-    <form @submit.prevent="createClient" class="form-container">
+    <form @submit.prevent="createClient">
       <div class="form-group">
-        <input type="text" v-model="newClient.clientNom" class="form-control" placeholder="Nom" required>
+        <input type="text" v-model="newClient.clientNom" id="nom" class="form-control" placeholder="Nom du client" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newClient.clientPrenom" class="form-control" placeholder="Prénom" required>
+        <input type="text" v-model="newClient.clientPrénom" id="prenom" class="form-control" placeholder="Prénom du client" required>
       </div>
       <div class="form-group">
-        <input type="email" v-model="newClient.clientEmail" class="form-control" placeholder="Email" required>
+        <input type="email" v-model="newClient.clientEmail" id="email" class="form-control" placeholder="Email du client" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newClient.clientAdresse" class="form-control" placeholder="Adresse" required>
+        <input type="text" v-model="newClient.clientTelephone" id="telephone" class="form-control" placeholder="Téléphone du client" required>
       </div>
-      <div class="form-group">
-        <input type="text" v-model="newClient.clientTelephone" class="form-control" placeholder="Téléphone" required>
-      </div>
-      <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+      <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
   </div>
 </template>
@@ -31,9 +28,8 @@ export default {
     return {
       newClient: {
         clientNom: '',
-        clientPrenom: '',
+        clientPrénom: '',
         clientEmail: '',
-        clientAdresse: '',
         clientTelephone: ''
       }
     };
@@ -41,91 +37,88 @@ export default {
   methods: {
     async createClient() {
       try {
-        const response = await ClientService.create(this.newClient);
-        if (response && response.data) {
-          console.log('Nouveau client ajouté :', response.data);
-          this.newClient = {
-            clientNom: '',
-            clientPrenom: '',
-            clientEmail: '',
-            clientAdresse: '',
-            clientTelephone: ''
-          };
-          this.$router.push('/clients/liste');
-        } else {
-          console.error('Réponse inattendue lors de l\'ajout du client :', response);
-        }
+        const response = await ClientService.createClient(this.newClient);
+        console.log('Nouveau client ajouté :', response.data);
+        alert('Client ajouté avec succès!');
+        this.resetForm();
       } catch (error) {
         console.error('Erreur lors de l\'ajout du client :', error);
+        alert('Erreur lors de l\'ajout du client. Veuillez réessayer.');
       }
+    },
+    resetForm() {
+      this.newClient = {
+        clientNom: '',
+        clientPrénom: '',
+        clientEmail: '',
+        clientTelephone: ''
+      };
     }
   }
 };
 </script>
 
 <style scoped>
-.add-client-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  padding-top: 50px; /* Espace en haut pour éloigner légèrement du haut */
-}
-
-h2 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 24px;
-  color: rgb(58, 69, 69);
-  text-align: center;
-  margin-top: 0; /* Supprime la marge par défaut du titre */
-}
-
-.form-container {
+.add-client {
   width: 100%;
   max-width: 600px;
   margin: auto;
   padding: 20px;
-  background-color: #f0f0f0; /* Couleur de fond légère */
+  background-color: #f0f0f0;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Légère ombre */
-  font-family: 'Roboto', sans-serif; /* Police de caractères */
-  color: #333; /* Couleur de texte principale */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+}
+
+h2 {
+  color: #444;
+  text-align: center;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 input[type="text"],
 input[type="email"] {
-  width: 100%;
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc; /* Bordure légère */
+  border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #fff; /* Fond blanc */
-  color: #333; /* Couleur de texte principale */
+  background-color: #fff;
+  color: #333;
 }
 
 input[type="text"]:focus,
 input[type="email"]:focus {
   outline: none;
-  border-color: #555; /* Couleur de bordure au focus */
+  border-color: #555;
 }
 
-button[type="submit"] {
-  background-color: #007bff; /* Bleu pour le bouton */
-  color: #fff; /* Texte blanc */
+button {
+  align-self: flex-end;
+  padding: 10px 50px;
+  background-color: #007bff;
+  color: #fff;
   border: none;
-  padding: 10px;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
+  margin-top: 10px;
 }
 
-button[type="submit"]:hover {
-  background-color: #0056b3; /* Variation de bleu au survol */
+button:hover {
+  background-color: #0056b3;
 }
 </style>
