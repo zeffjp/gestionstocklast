@@ -1,5 +1,6 @@
 package com.gestionstock3.gestionstock.Modele;
 
+import com.gestionstock3.gestionstock.Enum.CommandeStatut;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,5 +28,7 @@ public class Commande {
 
     private int commandeQuantite;
     private double commandePrixtotal;
-    private String commandeStatut;
+
+    @Enumerated(EnumType.STRING)
+    private CommandeStatut commandeStatut;
 }
