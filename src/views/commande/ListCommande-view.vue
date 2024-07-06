@@ -25,7 +25,7 @@
           <td>{{ commande.commandeStatut }}</td>
           <td>
             <router-link :to="'/commande/edit/' + commande.commandeNumero" class="btn btn-info">Modifier</router-link>
-            <button @click="deleteCommande(commande.commandeNumero)" class="btn btn-danger">Supprimer</button>
+            <button @click="delete(commande.commandeNumero)" class="btn btn-danger">Supprimer</button>
           </td>
         </tr>
         <!-- Si aucune commande n'est trouvée -->
@@ -59,7 +59,7 @@ export default {
         console.error('Erreur lors du chargement des commandes :', error);
       }
     },
-    async deleteCommande(commandeNumero) {
+    async delete(commandeNumero) {
       try {
         await CommandeService.delete(commandeNumero);
         this.commandes = this.commandes.filter(commande => commande.commandeNumero !== commandeNumero);
@@ -125,11 +125,21 @@ td {
   border: none;
   border-radius: 4px;
   color: #fff;
-  background-color: #007bff;
-  transition: background-color 0.3s;
 }
 
-.btn:hover {
+.btn-info {
+  background-color: #007bff;
+}
+
+.btn-info:hover {
   background-color: #0056b3;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #bd2130;
 }
 </style>

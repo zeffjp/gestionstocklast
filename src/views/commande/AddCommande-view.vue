@@ -1,7 +1,7 @@
 <template>
   <div class="add-commande">
     <h2>Ajouter une Commande</h2>
-    <form @submit.prevent="createCommande">
+    <form @submit.prevent="create">
       <div class="form-group">
         <input type="text" v-model="newCommande.client.nom" class="form-control" placeholder="Client" required>
       </div>
@@ -64,7 +64,7 @@ export default {
         console.error('Erreur lors de la récupération des articles :', error);
       }
     },
-    async createCommande() {
+    async create() {
       try {
         const response = await CommandeService.create(this.newCommande);
         console.log('Nouvelle commande ajoutée :', response.data);
@@ -76,7 +76,7 @@ export default {
           commandePrixtotal: 0,
           commandeStatut: ''
         };
-        this.$router.push('/commande/liste');
+        this.$router.push('/commande/ListCommande'); // Adjusted router path
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la commande :', error);
       }

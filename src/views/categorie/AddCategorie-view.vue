@@ -35,10 +35,10 @@ export default {
           categorieNom: '',
           categorieDescription: ''
         };
-        this.$router.push('.views/categorie/ListCategorie-view.vue');
+        this.$router.push('/categories'); // Replace with correct route path
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la catégorie :', error);
-        // Gérer l'erreur ici, par exemple afficher un message à l'utilisateur
+        // Handle error, e.g., show an error message to the user
       }
     }
   }

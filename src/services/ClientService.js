@@ -16,12 +16,12 @@ const ClientService = {
     return axios.get(`${API_URL}/${id}`, axiosConfig);
   },
 
-  create(articleData) {
-    return axios.post(API_URL, articleData, axiosConfig);
+  create(clientData) {
+    return axios.post(API_URL, clientData, axiosConfig);
   },
 
-  update(id, articleData) {
-    return axios.put(`${API_URL}/${id}`, articleData, axiosConfig);
+  update(id, clientData) {
+    return axios.put(`${API_URL}/${id}`, clientData, axiosConfig);
   },
 
   delete(id) {

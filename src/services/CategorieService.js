@@ -15,12 +15,12 @@ const CategorieService = {
     return axios.get(`${API_URL}/${id}`, axiosConfig);
   },
 
-  create(articleData) {
-    return axios.post(API_URL, articleData, axiosConfig);
+  create(categorieData) {
+    return axios.post(API_URL, categorieData, axiosConfig);
   },
 
-  update(id, articleData) {
-    return axios.put(`${API_URL}/${id}`, articleData, axiosConfig);
+  update(id, categorieData) {
+    return axios.put(`${API_URL}/${id}`, categorieData, axiosConfig);
   },
 
   delete(id) {

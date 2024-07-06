@@ -19,7 +19,8 @@
           <!-- Affichage des articles -->
           <tr v-for="article in articles" :key="article.articleId">
             <td>
-              <img :src="article.imageUrl || 'placeholder.jpg'" alt="Image de l'article" style="max-width: 100px; max-height: 100px;">
+              <img :src="article.imageUrl || require('@/assets/placeholder.jpg')" alt="Image de l'article"
+                style="max-width: 100px; max-height: 100px;">
             </td>
             <td>{{ article.articleNom }}</td>
             <td>{{ article.articleDescription }}</td>

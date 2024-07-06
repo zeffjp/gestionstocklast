@@ -20,12 +20,12 @@ const VenteService = {
     return axios.post(API_URL, venteData, axiosConfig);
   },
 
-  update(id, venteData) {
-    return axios.put(`${API_URL}/${id}`, venteData, axiosConfig);
+  update(venteId, venteData) {
+    return axios.put(`${API_URL}/${venteId}`, venteData, axiosConfig);
   },
 
-  delete(id) {
-    return axios.delete(`${API_URL}/${id}`, axiosConfig);
+  delete(venteId) {
+    return axios.delete(`${API_URL}/${venteId}`, axiosConfig);
   }
 };
 

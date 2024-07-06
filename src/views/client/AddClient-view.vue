@@ -3,15 +3,19 @@
     <h2>Ajouter un Client</h2>
     <form @submit.prevent="createClient">
       <div class="form-group">
+        <label for="nom">Nom du client</label>
         <input type="text" v-model="newClient.clientNom" id="nom" class="form-control" placeholder="Nom du client" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newClient.clientPrénom" id="prenom" class="form-control" placeholder="Prénom du client" required>
+        <label for="prenom">Prénom du client</label>
+        <input type="text" v-model="newClient.clientPrenom" id="prenom" class="form-control" placeholder="Prénom du client" required>
       </div>
       <div class="form-group">
+        <label for="email">Email du client</label>
         <input type="email" v-model="newClient.clientEmail" id="email" class="form-control" placeholder="Email du client" required>
       </div>
       <div class="form-group">
+        <label for="telephone">Téléphone du client</label>
         <input type="text" v-model="newClient.clientTelephone" id="telephone" class="form-control" placeholder="Téléphone du client" required>
       </div>
       <button type="submit" class="btn btn-primary">Ajouter</button>
@@ -28,7 +32,7 @@ export default {
     return {
       newClient: {
         clientNom: '',
-        clientPrénom: '',
+        clientPrenom: '',
         clientEmail: '',
         clientTelephone: ''
       }
@@ -37,7 +41,7 @@ export default {
   methods: {
     async createClient() {
       try {
-        const response = await ClientService.createClient(this.newClient);
+        const response = await ClientService.create(this.newClient);
         console.log('Nouveau client ajouté :', response.data);
         alert('Client ajouté avec succès!');
         this.resetForm();
@@ -49,7 +53,7 @@ export default {
     resetForm() {
       this.newClient = {
         clientNom: '',
-        clientPrénom: '',
+        clientPrenom: '',
         clientEmail: '',
         clientTelephone: ''
       };

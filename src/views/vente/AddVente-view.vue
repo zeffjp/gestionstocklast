@@ -1,7 +1,7 @@
 <template>
   <div class="add-vente">
     <h2>Ajouter une Vente</h2>
-    <form @submit.prevent="createVente">
+    <form @submit.prevent="create">
       <div class="form-group">
         <input type="text" v-model="newVente.client.nom" id="client" class="form-control" placeholder="Nom du client" required>
       </div>
@@ -12,7 +12,7 @@
         <input type="date" v-model="newVente.date" id="date" class="form-control" required>
       </div>
       <div class="form-group">
-        <input type="number" v-model.number="newVente.quantiteVendue" id="quantite" class="form-control" placeholder="Quantité Vendue" required>
+        <input type="number" step="0.01" v-model.number="newVente.quantiteVendue" id="quantite" class="form-control" placeholder="Quantité Vendue" required>
       </div>
       <div class="form-group">
         <input type="number" step="0.01" v-model.number="newVente.prixTotal" id="prix" class="form-control" placeholder="Prix Total" required>
@@ -43,11 +43,12 @@ export default {
     };
   },
   methods: {
-    async createVente() {
+    async create() {
       try {
         const response = await VenteService.create(this.newVente);
         console.log('Nouvelle vente ajoutée :', response.data);
         alert('Vente ajoutée avec succès!');
+        this.$router.push('/commande/ListVente-view');
         this.resetForm();
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la vente :', error);
