@@ -3,19 +3,15 @@
     <h2>Ajouter un Client</h2>
     <form @submit.prevent="createClient">
       <div class="form-group">
-        <label for="nom">Nom du client</label>
         <input type="text" v-model="newClient.clientNom" id="nom" class="form-control" placeholder="Nom du client" required>
       </div>
       <div class="form-group">
-        <label for="prenom">Prénom du client</label>
         <input type="text" v-model="newClient.clientPrenom" id="prenom" class="form-control" placeholder="Prénom du client" required>
       </div>
       <div class="form-group">
-        <label for="email">Email du client</label>
         <input type="email" v-model="newClient.clientEmail" id="email" class="form-control" placeholder="Email du client" required>
       </div>
       <div class="form-group">
-        <label for="telephone">Téléphone du client</label>
         <input type="text" v-model="newClient.clientTelephone" id="telephone" class="form-control" placeholder="Téléphone du client" required>
       </div>
       <button type="submit" class="btn btn-primary">Ajouter</button>
@@ -44,6 +40,7 @@ export default {
         const response = await ClientService.createClient(this.newClient);
         console.log('Nouveau client ajouté :', response.data);
         alert('Client ajouté avec succès!');
+        this.$router.push({ name: 'ListClient', params: { newClient: response.data } });
         this.resetForm();
       } catch (error) {
         console.error('Erreur lors de l\'ajout du client :', error);

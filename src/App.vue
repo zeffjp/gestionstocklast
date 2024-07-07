@@ -27,15 +27,14 @@ export default {
 </script>
 
 <style scoped>
-/* Styles personnalisés spécifiques à App.vue */
+
 #app {
   font-family: 'Avenir', 'Helvetica', 'Arial', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #414346;
-  background-color: #757c83; /* Couleur de fond gris foncé */
-  display: flex;
+  background-color: #757c83;   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
@@ -49,12 +48,12 @@ export default {
 .content {
   flex-grow: 1;
   padding: 20px;
-  margin-left: 230px; /* Espacement à gauche pour le contenu principal */
-  background-color: #f5f5f5; /* Couleur de fond claire pour le contenu */
+  margin-left: 230px; 
+  background-color: #f5f5f5; 
   border-radius: 10px;
 }
 
 footer {
-  padding-bottom: 50px; /* Espacement du pied de page */
-}
+  padding-bottom: 50px; 
+  }
 </style>

@@ -3,10 +3,10 @@
     <h2>Ajouter une Catégorie d'Articles</h2>
     <form @submit.prevent="createCategorie" class="form-container">
       <div class="form-group">
-        <input type="text" v-model="newCategorie.categorieNom" class="form-control" placeholder="Nom de la catégorie" required>
+        <input type="text" v-model="newCategorie.categorieNom" id="categorieNom" class="form-control" placeholder="Nom de la catégorie" required>
       </div>
       <div class="form-group">
-        <textarea v-model="newCategorie.categorieDescription" class="form-control" placeholder="Description de la catégorie"></textarea>
+        <textarea v-model="newCategorie.categorieDescription" id="categorieDescription" class="form-control" placeholder="Description de la catégorie"></textarea>
       </div>
       <button type="submit" class="btn btn-primary w-100">Ajouter</button>
     </form>
@@ -30,16 +30,20 @@ export default {
     async createCategorie() {
       try {
         const response = await CategorieService.createCategorie(this.newCategorie);
-        console.log('Réponse de création de catégorie :', response);
-        this.newCategorie = {
-          categorieNom: '',
-          categorieDescription: ''
-        };
-        this.$router.push('/categories'); // Redirige vers la liste des catégories après création
+        console.log('Nouvelle catégorie ajoutée :', response.data);
+        alert('Catégorie ajoutée avec succès!');
+        this.$router.push({ name: 'ListArticle', params: { newArticle: response.data } });
+        this.resetForm();
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la catégorie :', error);
-        // Gérer l'erreur ici (ex: affichage d'un message d'erreur à l'utilisateur)
+        alert('Erreur lors de l\'ajout de la catégorie. Veuillez réessayer.');
       }
+    },
+    resetForm() {
+      this.newCategorie = {
+        categorieNom: '',
+        categorieDescription: ''
+      };
     }
   }
 };

@@ -2,7 +2,6 @@
   <div class="article-list">
     <h2>Liste des Articles</h2>
 
-    <!-- Tableau des articles -->
     <div class="table-responsive">
       <table class="table table-striped table-bordered">
         <thead>
@@ -13,24 +12,48 @@
             <th>Catégorie</th>
             <th>Prix</th>
             <th>Quantité en Stock</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <!-- Affichage des articles -->
-          <tr v-for="article in articles" :key="article.articleId">
+          <tr v-if="articles.length === 0">
+            <td colspan="7" class="no-data">Aucun article trouvé.</td>
+          </tr>
+          <tr v-else v-for="article in articles" :key="article.articleId" class="article-row">
             <td>
               <img :src="article.imageUrl || require('@/assets/placeholder.jpg')" alt="Image de l'article"
                 style="max-width: 100px; max-height: 100px;">
             </td>
-            <td>{{ article.articleNom }}</td>
-            <td>{{ article.articleDescription }}</td>
-            <td>{{ article.categorie.categorieNom }}</td>
-            <td>{{ article.articlePrix }}</td>
-            <td>{{ article.articleQuantite }}</td>
-          </tr>
-          <!-- Si aucun résultat ne correspond à la recherche -->
-          <tr v-if="articles.length === 0">
-            <td colspan="6" style="text-align: center;">Aucun article trouvé.</td>
+            <td v-if="!article.editing">{{ article.articleNom }}</td>
+            <td v-else><input v-model="article.articleNom" /></td>
+            
+            <td v-if="!article.editing">{{ article.articleDescription }}</td>
+            <td v-else><input v-model="article.articleDescription" /></td>
+            
+            <td v-if="!article.editing">{{ article.categorie.categorieNom }}</td>
+            <td v-else><input v-model="article.categorie.categorieNom" /></td>
+            
+            <td v-if="!article.editing">{{ article.articlePrix }}</td>
+            <td v-else><input type="number" v-model="article.articlePrix" /></td>
+            
+            <td v-if="!article.editing">{{ article.articleQuantite }}</td>
+            <td v-else><input type="number" v-model="article.articleQuantite" /></td>
+            
+            <td>
+              <template v-if="!article.editing">
+                <button class="btn btn-sm btn-primary" @click="editArticle(article)">Modifier</button>
+                <button class="btn btn-sm btn-danger" @click="confirmDelete(article)">Supprimer</button>
+                <span v-if="article.confirmDelete">
+                  Confirmer ?
+                  <button @click="deleteArticle(article.articleId)" class="btn btn-sm btn-danger">Oui</button>
+                  <button @click="cancelDelete(article)" class="btn btn-sm btn-secondary">Non</button>
+                </span>
+              </template>
+              <template v-else>
+                <button class="btn btn-sm btn-success" @click="saveArticle(article)">Enregistrer</button>
+                <button class="btn btn-sm btn-secondary" @click="cancelEdit(article)">Annuler</button>
+              </template>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -57,12 +80,43 @@ export default {
         const response = await ArticleService.getAllArticles();
         this.articles = response.data.map(article => ({
           ...article,
-          imageUrl: article.imageUrl || '' // Assurez-vous que imageUrl est défini ou utilisez une valeur par défaut
+          imageUrl: article.imageUrl || ''
         }));
       } catch (error) {
         console.error('Erreur lors de la récupération des articles :', error);
-        // Gérer l'erreur ici (ex: affichage d'un message d'erreur à l'utilisateur)
       }
+    },
+    async deleteArticle(articleId) {
+      try {
+        await ArticleService.deleteArticle(articleId);
+        this.articles = this.articles.filter(article => article.articleId !== articleId);
+        alert('Article supprimé avec succès!');
+      } catch (error) {
+        console.error('Erreur lors de la suppression de l\'article :', error);
+        alert('Erreur lors de la suppression de l\'article. Veuillez réessayer.');
+      }
+    },
+    editArticle(article) {
+      article.editing = true;
+    },
+    cancelEdit(article) {
+      article.editing = false;
+    },
+    async saveArticle(article) {
+      try {
+        await ArticleService.updateArticle(article.articleId, article);
+        article.editing = false;
+        alert('Article mis à jour avec succès!');
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour de l\'article :', error);
+        alert('Erreur lors de la mise à jour de l\'article. Veuillez réessayer.');
+      }
+    },
+    confirmDelete(article) {
+      article.confirmDelete = true;
+    },
+    cancelDelete(article) {
+      article.confirmDelete = false;
     }
   }
 };
@@ -80,10 +134,24 @@ export default {
 
 h2 {
   color: #444;
+  text-align: center;
 }
 
 .table-responsive {
   margin-top: 20px;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
 }
 
 .table th {
@@ -92,30 +160,56 @@ h2 {
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.no-data {
+  text-align: center;
+  color: #444;
 }
 
 .table td {
   color: rgb(15, 16, 16);
 }
 
-.form-control {
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #495057;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #ced4da;
-  border-radius: 15px;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+.btn {
+  padding: 8px 16px;
+  margin-right: 8px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
 }
 
-.form-control:focus {
-  color: #495057;
-  background-color: #fff;
-  border-color: #80bdff;
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #bd2130;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-success {
+  background-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
 }
 </style>

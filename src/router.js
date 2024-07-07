@@ -8,13 +8,12 @@ import ListCategorie from './views/categorie/ListCategorie-view.vue';
 import AddCategorie from './views/categorie/AddCategorie-view.vue';
 import ListCommande from './views/commande/ListCommande-view.vue';
 import AddCommande from './views/commande/AddCommande-view.vue';
-import ListAdmin from './views/admin/ListAdmin-view.vue';
-import AddAdmin from './views/admin/AddAdmin-view.vue';
+
 import ListVente from './views/vente/ListVente-view.vue';
 import AddVente from './views/vente/AddVente-view.vue'; 
 import Home from './components/Home-component.vue';
 import WelcoMemessage from './views/Acceuil/Acceuil-view.vue';
-import ListeCategorie from './views/categorie/ListCategorie-view.vue'; // Correction ici
+import ListeCategorie from './views/categorie/ListCategorie-view.vue'; 
 import ListeArticle from './views/article/ListArticle-view.vue';
 import ListeCommande from './views/commande/ListCommande-view.vue';
 import ListeVente from './views/vente/ListVente-view.vue';
@@ -70,16 +69,7 @@ const routes = [
     name: 'AddCommande',
     component: AddCommande
   },
-  {
-    path: '/admins',
-    name: 'ListAdmin',
-    component: ListAdmin
-  },
-  {
-    path: '/admins/add',
-    name: 'AddAdmin',
-    component: AddAdmin
-  },
+ 
   {
     path: '/ventes',
     name: 'ListVente',
@@ -110,7 +100,6 @@ const routes = [
     name: 'ListeCategorie',
     component: ListeCategorie
   },
-  // Autres routes peuvent être ajoutées ici
 ];
 
 const router = createRouter({

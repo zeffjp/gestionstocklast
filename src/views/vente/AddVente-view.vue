@@ -3,10 +3,10 @@
     <h2>Ajouter une Vente</h2>
     <form @submit.prevent="create">
       <div class="form-group">
-        <input type="text" v-model="newVente.client.nom" id="client" class="form-control" placeholder="Nom du client" required>
+        <input type="text" v-model="newVente.client" id="client" class="form-control" placeholder="Nom du client" required>
       </div>
       <div class="form-group">
-        <input type="text" v-model="newVente.articleVendu.nom" id="article" class="form-control" placeholder="Nom de l'article" required>
+        <input type="text" v-model="newVente.articleVendu" id="article" class="form-control" placeholder="Nom de l'article" required>
       </div>
       <div class="form-group">
         <input type="date" v-model="newVente.date" id="date" class="form-control" required>
@@ -30,12 +30,8 @@ export default {
   data() {
     return {
       newVente: {
-        client: {
-          nom: '',
-        },
-        articleVendu: {
-          nom: '',
-        },
+        client: '',
+        articleVendu: '',
         date: '',
         quantiteVendue: '',
         prixTotal: ''
@@ -48,7 +44,7 @@ export default {
         const response = await VenteService.createVente(this.newVente);
         console.log('Nouvelle vente ajoutée :', response.data);
         alert('Vente ajoutée avec succès!');
-        this.$router.push('/ventes/list'); // Assurez-vous que cette route existe dans votre configuration de routage
+        this.$router.push({ name: 'ListVente', params: { newVente: response.data } });
         this.resetForm();
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la vente :', error);
@@ -57,12 +53,8 @@ export default {
     },
     resetForm() {
       this.newVente = {
-        client: {
-          nom: '',
-        },
-        articleVendu: {
-          nom: '',
-        },
+        client: '',
+        articleVendu: '',
         date: '',
         quantiteVendue: '',
         prixTotal: ''

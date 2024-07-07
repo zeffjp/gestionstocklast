@@ -3,24 +3,23 @@
     <h2>Ajouter un Article</h2>
     <form @submit.prevent="createArticle">
       <div class="form-group">
-        <input type="text" v-model="newArticle.articleNom" class="form-control" placeholder="Nom de l'article" required>
+        <input type="text" v-model="newArticle.articleNom" id="articleNom" class="form-control" placeholder="Nom de l'article" required>
       </div>
       <div class="form-group">
-        <textarea v-model="newArticle.articleDescription" class="form-control" placeholder="Description de l'article" required></textarea>
+        <textarea v-model="newArticle.articleDescription" id="articleDescription" class="form-control" placeholder="Description de l'article" required></textarea>
       </div>
       <div class="form-group">
-        <input type="number" v-model="newArticle.articlePrix" class="form-control" placeholder="Prix de l'article" required>
+        <input type="number" v-model="newArticle.articlePrix" id="articlePrix" class="form-control" placeholder="Prix de l'article" required>
       </div>
       <div class="form-group">
-        <input type="number" v-model="newArticle.articleQuantite" class="form-control" placeholder="Quantité en Stock" required>
+        <input type="number" v-model="newArticle.articleQuantite" id="articleQuantite" class="form-control" placeholder="Quantité en Stock" required>
       </div>
       <div class="form-group">
-        <input type="number" v-model="newArticle.categorieId" class="form-control" placeholder="ID de Catégorie" required>
+        <input type="number" v-model="newArticle.categorieId" id="categorieId" class="form-control" placeholder="ID de Catégorie" required>
       </div>
       <div class="form-group">
         <label for="articleImage">Image de l'Article</label>
         <input id="articleImage" type="file" @change="handleImageUpload" accept="image/*">
-        <!-- Aperçu de l'image sélectionnée -->
         <img v-if="newArticle.imagePreview" :src="newArticle.imagePreview" alt="Aperçu de l'image" style="max-width: 200px; margin-top: 10px;">
       </div>
       <button type="submit" class="btn btn-primary">Ajouter</button>
@@ -41,47 +40,43 @@ export default {
         articlePrix: null,
         articleQuantite: null,
         categorieId: null,
-        image: null, // Fichier de l'image à envoyer au serveur
-        imagePreview: null // Aperçu de l'image pour l'utilisateur
+        image: null,
+        imagePreview: null
       }
     };
   },
   methods: {
     async createArticle() {
       try {
-        // Upload de l'image si présente
         if (this.newArticle.image) {
-          // Implémenter le code pour uploader l'image vers votre serveur
-          // Exemple : const imageUrl = await ArticleService.uploadImage(this.newArticle.imageFile);
-          // Puis ajouter imageUrl dans this.newArticle
           this.newArticle.imageUrl = URL.createObjectURL(this.newArticle.image);
         }
 
-        // Création de l'article
         const response = await ArticleService.createArticle(this.newArticle);
         console.log('Nouvel article ajouté :', response.data);
 
-        // Réinitialisation du formulaire
-        this.newArticle = {
-          articleNom: '',
-          articleDescription: '',
-          articlePrix: null,
-          articleQuantite: null,
-          categorieId: null,
-          image: null,
-          imagePreview: null
-        };
-
-        // Redirection vers la liste des articles par exemple
-        this.$router.push('/articles');
+        this.resetForm();
+        this.$router.push({ name: 'ListArticle', params: { newArticle: response.data } });
       } catch (error) {
         console.error('Erreur lors de l\'ajout de l\'article :', error);
+        alert('Erreur lors de l\'ajout de l\'article. Veuillez réessayer.');
       }
     },
     handleImageUpload(event) {
       const file = event.target.files[0];
       this.newArticle.image = file;
-      this.newArticle.imagePreview = URL.createObjectURL(file); // Aperçu de l'image
+      this.newArticle.imagePreview = URL.createObjectURL(file);
+    },
+    resetForm() {
+      this.newArticle = {
+        articleNom: '',
+        articleDescription: '',
+        articlePrix: null,
+        articleQuantite: null,
+        categorieId: null,
+        image: null,
+        imagePreview: null
+      };
     }
   }
 };
@@ -111,7 +106,12 @@ form {
 }
 
 .form-group {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 input[type="text"],
@@ -143,6 +143,7 @@ button {
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.3s, color 0.3s;
+  margin-top: 10px;
 }
 
 button:hover {

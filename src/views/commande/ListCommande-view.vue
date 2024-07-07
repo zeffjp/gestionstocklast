@@ -15,22 +15,46 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="commande in commandes" :key="commande.commandeNumero" class="commande-row">
-          <td>{{ commande.commandeNumero }}</td>
-          <td>{{ commande.client.nom }}</td>
-          <td>{{ formatDate(commande.commandeDate) }}</td>
-          <td>{{ commande.article.nom }}</td>
-          <td>{{ commande.commandeQuantite }}</td>
-          <td>{{ commande.commandePrixtotal }}</td>
-          <td>{{ commande.commandeStatut }}</td>
-          <td>
-            <router-link :to="'/commande/edit/' + commande.commandeNumero" class="btn btn-info">Modifier</router-link>
-            <button @click="deleteCommande(commande.commandeNumero)" class="btn btn-danger">Supprimer</button>
-          </td>
-        </tr>
-        <!-- Si aucune commande n'est trouvée -->
         <tr v-if="commandes.length === 0">
-          <td colspan="8" style="text-align: center;">Aucune commande trouvée.</td>
+          <td colspan="8" class="no-data">Aucune commande trouvée.</td>
+        </tr>
+        <tr v-else v-for="commande in commandes" :key="commande.commandeNumero" class="commande-row">
+          <td v-if="!commande.editing">{{ commande.commandeNumero }}</td>
+          <td v-else><input v-model="commande.commandeNumero" /></td>
+          
+          <td v-if="!commande.editing">{{ commande.client.nom }}</td>
+          <td v-else><input v-model="commande.client.nom" /></td>
+
+          <td v-if="!commande.editing">{{ formatDate(commande.commandeDate) }}</td>
+          <td v-else><input v-model="commande.commandeDate" /></td>
+
+          <td v-if="!commande.editing">{{ commande.article.nom }}</td>
+          <td v-else><input v-model="commande.article.nom" /></td>
+
+          <td v-if="!commande.editing">{{ commande.commandeQuantite }}</td>
+          <td v-else><input v-model="commande.commandeQuantite" /></td>
+
+          <td v-if="!commande.editing">{{ commande.commandePrixtotal }}</td>
+          <td v-else><input v-model="commande.commandePrixtotal" /></td>
+
+          <td v-if="!commande.editing">{{ commande.commandeStatut }}</td>
+          <td v-else><input v-model="commande.commandeStatut" /></td>
+
+          <td>
+            <template v-if="!commande.editing">
+              <button class="btn btn-primary" @click="editCommande(commande)">Modifier</button>
+              <button class="btn btn-danger" @click="confirmDelete(commande)">Supprimer</button>
+              <span v-if="commande.confirmDelete">
+                Confirmer ?
+                <button @click="deleteCommande(commande.commandeNumero)" class="btn btn-sm btn-danger">Oui</button>
+                <button @click="cancelDelete(commande)" class="btn btn-sm btn-secondary">Non</button>
+              </span>
+            </template>
+            <template v-else>
+              <button class="btn btn-success" @click="saveCommande(commande)">Enregistrer</button>
+              <button class="btn btn-secondary" @click="cancelEdit(commande)">Annuler</button>
+            </template>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -59,11 +83,30 @@ export default {
         console.error('Erreur lors du chargement des commandes :', error);
       }
     },
+    editCommande(commande) {
+      commande.editing = true;
+    },
+    cancelEdit(commande) {
+      commande.editing = false;
+    },
+    async saveCommande(commande) {
+      try {
+        await CommandeService.updateCommande(commande.commandeNumero, commande);
+        commande.editing = false;
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour de la commande :', error);
+      }
+    },
+    confirmDelete(commande) {
+      commande.confirmDelete = true;
+    },
+    cancelDelete(commande) {
+      commande.confirmDelete = false;
+    },
     async deleteCommande(commandeNumero) {
       try {
         await CommandeService.deleteCommande(commandeNumero);
         this.commandes = this.commandes.filter(commande => commande.commandeNumero !== commandeNumero);
-        console.log('Commande supprimée avec succès.');
       } catch (error) {
         console.error('Erreur lors de la suppression de la commande :', error);
       }
@@ -91,6 +134,7 @@ export default {
 
 h2 {
   color: #444;
+  text-align: center;
 }
 
 table {
@@ -118,6 +162,14 @@ td {
   color: #444;
 }
 
+.no-data {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+  padding: 20px; 
+  font-size: 1.2rem;
+}
+
 .btn {
   padding: 8px 16px;
   margin-right: 8px;
@@ -127,11 +179,11 @@ td {
   color: #fff;
 }
 
-.btn-info {
+.btn-primary {
   background-color: #007bff;
 }
 
-.btn-info:hover {
+.btn-primary:hover {
   background-color: #0056b3;
 }
 
@@ -141,5 +193,21 @@ td {
 
 .btn-danger:hover {
   background-color: #bd2130;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-success {
+  background-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
 }
 </style>

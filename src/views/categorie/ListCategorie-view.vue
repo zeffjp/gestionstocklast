@@ -13,10 +13,16 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Affichage des catégories -->
-          <tr v-for="categorie in categories" :key="categorie.categorieId">
-            <td>{{ categorie.categorieNom }}</td>
-            <td>{{ categorie.categorieDescription }}</td>
+          <tr v-if="categories.length === 0">
+            <td colspan="3" style="text-align: center;">Aucune catégorie disponible.</td>
+          </tr>
+          <tr v-else v-for="categorie in categories" :key="categorie.categorieId">
+            <td v-if="!categorie.editing">{{ categorie.categorieNom }}</td>
+            <td v-else><input v-model="categorie.categorieNom" /></td>
+
+            <td v-if="!categorie.editing">{{ categorie.categorieDescription }}</td>
+            <td v-else><input v-model="categorie.categorieDescription" /></td>
+
             <td>
               <template v-if="!categorie.editing">
                 <button @click="editCategorie(categorie)" class="btn btn-sm btn-primary">Modifier</button>
@@ -32,10 +38,6 @@
                 <button @click="cancelEdit(categorie)" class="btn btn-sm btn-secondary">Annuler</button>
               </template>
             </td>
-          </tr>
-          <!-- Si aucune catégorie n'est disponible -->
-          <tr v-if="categories.length === 0">
-            <td colspan="3" style="text-align: center;">Aucune catégorie disponible.</td>
           </tr>
         </tbody>
       </table>
@@ -67,7 +69,7 @@ export default {
         }));
       } catch (error) {
         console.error('Erreur lors de la récupération des catégories :', error);
-        // Gérer l'erreur ici (ex: affichage d'un message d'erreur à l'utilisateur)
+        alert('Une erreur s\'est produite lors de la récupération des catégories.');
       }
     },
     async deleteCategorie(categorie) {
@@ -77,6 +79,7 @@ export default {
         this.categories = this.categories.filter(c => c.categorieId !== categorieId);
       } catch (error) {
         console.error('Erreur lors de la suppression de la catégorie :', error);
+        alert('Une erreur s\'est produite lors de la suppression de la catégorie.');
       }
     },
     confirmDelete(categorie) {
@@ -94,6 +97,7 @@ export default {
         categorie.editing = false;
       } catch (error) {
         console.error('Erreur lors de la sauvegarde des modifications de la catégorie :', error);
+        alert('Une erreur s\'est produite lors de la sauvegarde des modifications de la catégorie.');
       }
     },
     cancelEdit(categorie) {

@@ -1,8 +1,6 @@
 <template>
   <div class="vente-list">
     <h2>Liste des Ventes</h2>
-
-    <!-- Tableau des ventes -->
     <div class="table-responsive">
       <table class="table table-striped table-bordered">
         <thead>
@@ -16,21 +14,40 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Affichage des ventes -->
-          <tr v-for="vente in ventes" :key="vente.id">
-            <td>{{ vente.client.nom }}</td>
-            <td>{{ vente.articleVendu.nom }}</td>
-            <td>{{ formatDate(vente.date) }}</td>
-            <td>{{ vente.quantiteVendue }}</td>
-            <td>{{ vente.prixTotal }}</td>
-            <td>
-              <button @click="editVente(vente)" class="btn btn-sm btn-primary">Modifier</button>
-              <button @click="deleteVente(vente.id)" class="btn btn-sm btn-danger">Supprimer</button>
-            </td>
-          </tr>
-          <!-- Si aucune vente n'est trouvée -->
           <tr v-if="ventes.length === 0">
             <td colspan="6" class="no-data">Aucune vente trouvée.</td>
+          </tr>
+          <tr v-else v-for="vente in ventes" :key="vente.id" class="vente-row">
+            <td v-if="!vente.editing">{{ vente.client.nom }}</td>
+            <td v-else><input v-model="vente.client.nom" /></td>
+            
+            <td v-if="!vente.editing">{{ vente.articleVendu.nom }}</td>
+            <td v-else><input v-model="vente.articleVendu.nom" /></td>
+            
+            <td v-if="!vente.editing">{{ formatDate(vente.date) }}</td>
+            <td v-else><input type="date" v-model="vente.date" /></td>
+            
+            <td v-if="!vente.editing">{{ vente.quantiteVendue }}</td>
+            <td v-else><input type="number" v-model="vente.quantiteVendue" /></td>
+            
+            <td v-if="!vente.editing">{{ vente.prixTotal }}</td>
+            <td v-else><input type="number" v-model="vente.prixTotal" /></td>
+            
+            <td>
+              <template v-if="!vente.editing">
+                <button class="btn btn-sm btn-primary" @click="editVente(vente)">Modifier</button>
+                <button class="btn btn-sm btn-danger" @click="confirmDelete(vente)">Supprimer</button>
+                <span v-if="vente.confirmDelete">
+                  Confirmer ?
+                  <button @click="deleteVente(vente.id)" class="btn btn-sm btn-danger">Oui</button>
+                  <button @click="cancelDelete(vente)" class="btn btn-sm btn-secondary">Non</button>
+                </span>
+              </template>
+              <template v-else>
+                <button class="btn btn-sm btn-success" @click="saveVente(vente)">Enregistrer</button>
+                <button class="btn btn-sm btn-secondary" @click="cancelEdit(vente)">Annuler</button>
+              </template>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -74,9 +91,26 @@ export default {
       }
     },
     editVente(vente) {
-      // Rediriger vers la page de modification de la vente
-      // Exemple: this.$router.push(`/ventes/${vente.id}/edit`);
-      console.log('Édition de la vente :', vente);
+      vente.editing = true;
+    },
+    cancelEdit(vente) {
+      vente.editing = false;
+    },
+    async saveVente(vente) {
+      try {
+        await VenteService.updateVente(vente.id, vente);
+        vente.editing = false;
+        alert('Vente mise à jour avec succès!');
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour de la vente :', error);
+        alert('Erreur lors de la mise à jour de la vente. Veuillez réessayer.');
+      }
+    },
+    confirmDelete(vente) {
+      vente.confirmDelete = true;
+    },
+    cancelDelete(vente) {
+      vente.confirmDelete = false;
     },
     formatDate(date) {
       return new Date(date).toLocaleDateString('fr-FR', {
@@ -137,5 +171,46 @@ h2 {
 
 .table td {
   color: rgb(15, 16, 16);
+}
+
+.btn {
+  padding: 8px 16px;
+  margin-right: 8px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #bd2130;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-success {
+  background-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
 }
 </style>

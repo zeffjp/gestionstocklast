@@ -23,10 +23,13 @@
       <div class="form-group">
         <select v-model="newCommande.commandeStatut" class="form-control" required>
           <option disabled value="">Sélectionner un statut</option>
-          <option value="En cours">En cours</option>
-          <option value="Livré">Livré</option>
-          <option value="Annulé">Annulé</option>
+          <option value="EN_ATTENTE">En attente</option>
+          <option value="CONFIRMEE">Confirmée</option>
+          <option value="EXPEDIEE">Expédiée</option>
+          <option value="LIVREE">Livrée</option>
+          <option value="ANNULEE">Annulée</option>
         </select>
+
       </div>
       <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
@@ -76,7 +79,7 @@ export default {
           commandePrixtotal: 0,
           commandeStatut: ''
         };
-        this.$router.push('/commande'); // Redirect to commandes list
+        this.$router.push({ name: 'ListCommande', params: { commandeId: response.data.commandeId } });
       } catch (error) {
         console.error('Erreur lors de l\'ajout de la commande :', error);
       }
@@ -91,15 +94,15 @@ export default {
   max-width: 600px;
   margin: auto;
   padding: 20px;
-  background-color: #f0f0f0; /* Couleur de fond légère */
+  background-color: #f0f0f0; 
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Légère ombre */
-  font-family: 'Roboto', sans-serif; /* Police de caractères */
-  color: #333; /* Couleur de texte principale */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
+  font-family: 'Roboto', sans-serif; 
+  color: #333; 
 }
 
 h2 {
-  color: #444; /* Couleur du titre */
+  color: #444; 
   text-align: center;
 }
 
@@ -118,10 +121,10 @@ input[type="number"],
 select {
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc; /* Bordure légère */
+  border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #fff; /* Fond blanc */
-  color: #333; /* Couleur de texte principale */
+  background-color: #fff;
+  color: #333; 
 }
 
 input[type="text"]:focus,
@@ -129,14 +132,14 @@ input[type="date"]:focus,
 input[type="number"]:focus,
 select:focus {
   outline: none;
-  border-color: #555; /* Couleur de bordure au focus */
+  border-color: #555; 
 }
 
 button {
   align-self: flex-end;
   padding: 10px 50px;
-  background-color: #007bff; /* Couleur de fond du bouton */
-  color: #fff; /* Couleur de texte */
+  background-color: #007bff; 
+  color: #fff; 
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -144,6 +147,6 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3; /* Couleur de fond au survol */
+  background-color: #0056b3; 
 }
 </style>
