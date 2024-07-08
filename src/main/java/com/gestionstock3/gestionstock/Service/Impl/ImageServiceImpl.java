@@ -55,4 +55,7 @@ public class ImageServiceImpl implements ImageService {
     public void deleteImage(Long id) {
         imageRepository.deleteById(id);
     }
+
+    public static class AuthServiceImpl {
+    }
 }
