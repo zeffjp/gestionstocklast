@@ -1,6 +1,12 @@
 <template>
   <div class="vente-list">
     <h2>Liste des Ventes</h2>
+
+    <!-- Champ de recherche -->
+    <div class="search">
+      <input type="text" v-model="searchText" placeholder="Rechercher par client ou article..." />
+    </div>
+
     <div class="table-responsive">
       <table class="table table-striped table-bordered">
         <thead>
@@ -14,25 +20,25 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-if="ventes.length === 0">
+          <tr v-if="filteredVentes.length === 0">
             <td colspan="6" class="no-data">Aucune vente trouvée.</td>
           </tr>
-          <tr v-else v-for="vente in ventes" :key="vente.id" class="vente-row">
+          <tr v-else v-for="vente in filteredVentes" :key="vente.id" class="vente-row">
             <td v-if="!vente.editing">{{ vente.client.nom }}</td>
             <td v-else><input v-model="vente.client.nom" /></td>
-            
+
             <td v-if="!vente.editing">{{ vente.articleVendu.nom }}</td>
             <td v-else><input v-model="vente.articleVendu.nom" /></td>
-            
+
             <td v-if="!vente.editing">{{ formatDate(vente.date) }}</td>
             <td v-else><input type="date" v-model="vente.date" /></td>
-            
+
             <td v-if="!vente.editing">{{ vente.quantiteVendue }}</td>
             <td v-else><input type="number" v-model="vente.quantiteVendue" /></td>
-            
+
             <td v-if="!vente.editing">{{ vente.prixTotal }}</td>
             <td v-else><input type="number" v-model="vente.prixTotal" /></td>
-            
+
             <td>
               <template v-if="!vente.editing">
                 <button class="btn btn-sm btn-primary" @click="editVente(vente)">Modifier</button>
@@ -54,7 +60,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import VenteService from '@/services/VenteService';
 
@@ -62,7 +67,8 @@ export default {
   name: 'ListVente',
   data() {
     return {
-      ventes: []
+      ventes: [],
+      searchText: ''
     };
   },
   created() {
@@ -117,6 +123,16 @@ export default {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
+      });
+    }
+  },
+  computed: {
+    filteredVentes() {
+      return this.ventes.filter(vente => {
+        return (
+          vente.client.nom.toLowerCase().includes(this.searchText.toLowerCase()) ||
+          vente.articleVendu.nom.toLowerCase().includes(this.searchText.toLowerCase())
+        );
       });
     }
   }

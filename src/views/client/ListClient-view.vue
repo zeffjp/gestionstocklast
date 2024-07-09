@@ -1,6 +1,7 @@
 <template>
   <div class="client-list">
     <h2>Liste des Clients</h2>
+    <input type="text" v-model="searchQuery" placeholder="Rechercher un client" class="search-input" />
 
     <div class="table-responsive">
       <table class="table table-striped">
@@ -14,10 +15,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-if="clients.length === 0">
+          <tr v-if="filteredClients.length === 0">
             <td colspan="5" class="no-data">Aucun client trouvé.</td>
           </tr>
-          <tr v-else v-for="client in clients" :key="client.clientId" class="client-row">
+          <tr v-else v-for="client in filteredClients" :key="client.clientId" class="client-row">
             <td v-if="!client.editing">{{ client.clientNom }}</td>
             <td v-else><input v-model="client.clientNom" /></td>
 
@@ -59,7 +60,8 @@ export default {
   name: 'ListClient',
   data() {
     return {
-      clients: []
+      clients: [],
+      searchQuery: ''
     };
   },
   created() {
@@ -105,6 +107,19 @@ export default {
         alert('Une erreur s\'est produite lors de la suppression du client.');
       }
     }
+  },
+  computed: {
+    filteredClients() {
+      return this.clients.filter(client => {
+        const query = this.searchQuery.toLowerCase();
+        return (
+          client.clientNom.toLowerCase().includes(query) ||
+          client.clientPrenom.toLowerCase().includes(query) ||
+          client.clientEmail.toLowerCase().includes(query) ||
+          client.clientTelephone.toLowerCase().includes(query)
+        );
+      });
+    }
   }
 };
 </script>
@@ -123,6 +138,16 @@ h2 {
   color: #444;
   text-align: center;
   margin-bottom: 20px;
+}
+
+.search-input {
+  display: block;
+  margin: 0 auto 20px auto;
+  padding: 10px;
+  width: 50%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .table-responsive {

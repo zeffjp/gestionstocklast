@@ -2,8 +2,12 @@
   <div class="article-list">
     <h2>Liste des Articles</h2>
 
+    <!-- Champ de recherche -->
+    <input type="text" v-model="searchText" placeholder="Rechercher par nom, description, catégorie..." class="form-control" style="width: 100%; max-width: 400px; margin-bottom: 10px;">
+
     <div class="table-responsive">
       <table class="table table-striped table-bordered">
+        <!-- Tableau des articles -->
         <thead>
           <tr>
             <th>Image</th>
@@ -16,10 +20,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-if="articles.length === 0">
+          <!-- Affichage des articles filtrés -->
+          <tr v-if="filteredArticles.length === 0">
             <td colspan="7" class="no-data">Aucun article trouvé.</td>
           </tr>
-          <tr v-else v-for="article in articles" :key="article.articleId" class="article-row">
+          <tr v-else v-for="article in filteredArticles" :key="article.articleId" class="article-row">
             <td>
               <img :src="article.imageUrl || require('@/assets/placeholder.jpg')" alt="Image de l'article"
                 style="max-width: 100px; max-height: 100px;">
@@ -60,7 +65,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import ArticleService from '@/services/ArticleService';
 
@@ -68,11 +72,24 @@ export default {
   name: 'ListArticle',
   data() {
     return {
-      articles: []
+      articles: [],
+      searchText: ''
     };
   },
   created() {
     this.fetchArticles();
+  },
+  computed: {
+    filteredArticles() {
+      // Filtrer les articles en fonction de this.searchText
+      const searchText = this.searchText.toLowerCase().trim();
+      return this.articles.filter(article =>
+        article.articleNom.toLowerCase().includes(searchText) ||
+        article.articleDescription.toLowerCase().includes(searchText) ||
+        article.categorie.categorieNom.toLowerCase().includes(searchText)
+        // Ajoutez d'autres critères de filtrage si nécessaire
+      );
+    }
   },
   methods: {
     async fetchArticles() {
@@ -121,7 +138,6 @@ export default {
   }
 };
 </script>
-
 <style scoped>
 .article-list {
   background-color: #f0f0f0;

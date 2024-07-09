@@ -1,6 +1,7 @@
 <template>
   <div class="commande-list">
     <h2>Liste des Commandes</h2>
+    <input type="text" v-model="searchQuery" placeholder="Rechercher une commande..." />
     <table>
       <thead>
         <tr>
@@ -15,13 +16,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-if="commandes.length === 0">
+        <tr v-if="filteredCommandes.length === 0">
           <td colspan="8" class="no-data">Aucune commande trouvée.</td>
         </tr>
-        <tr v-else v-for="commande in commandes" :key="commande.commandeNumero" class="commande-row">
+        <tr v-else v-for="commande in filteredCommandes" :key="commande.commandeNumero" class="commande-row">
           <td v-if="!commande.editing">{{ commande.commandeNumero }}</td>
           <td v-else><input v-model="commande.commandeNumero" /></td>
-          
+
           <td v-if="!commande.editing">{{ commande.client.nom }}</td>
           <td v-else><input v-model="commande.client.nom" /></td>
 
@@ -68,11 +69,50 @@ export default {
   name: 'ListCommande',
   data() {
     return {
-      commandes: []
+      commandes: [
+        {
+          commandeNumero: '001',
+          client: { nom: 'Client A' },
+          commandeDate: '2023-01-01',
+          article: { nom: 'Article A' },
+          commandeQuantite: 10,
+          commandePrixtotal: 2000,
+          commandeStatut: 'Confirmée',
+          editing: false,
+          confirmDelete: false,
+        },
+        {
+          commandeNumero: '002',
+          client: { nom: 'Client B' },
+          commandeDate: '2023-02-01',
+          article: { nom: 'Article B' },
+          commandeQuantite: 5,
+          commandePrixtotal: 1000,
+          commandeStatut: 'En cours',
+          editing: false,
+          confirmDelete: false,
+        },
+      ],
+      searchQuery: '',
     };
   },
   created() {
     this.fetchCommandes();
+  },
+  computed: {
+    filteredCommandes() {
+      return this.commandes.filter(commande => {
+        return (
+          commande.commandeNumero.includes(this.searchQuery) ||
+          commande.client.nom.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          this.formatDate(commande.commandeDate).includes(this.searchQuery) ||
+          commande.article.nom.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          commande.commandeQuantite.toString().includes(this.searchQuery) ||
+          commande.commandePrixtotal.toString().includes(this.searchQuery) ||
+          commande.commandeStatut.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      });
+    },
   },
   methods: {
     async fetchCommandes() {
@@ -137,6 +177,16 @@ h2 {
   text-align: center;
 }
 
+input[type="text"] {
+  display: block;
+  margin: 20px auto;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 400px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -166,7 +216,7 @@ td {
   text-align: center;
   font-style: italic;
   color: #888;
-  padding: 20px; 
+  padding: 20px;
   font-size: 1.2rem;
 }
 

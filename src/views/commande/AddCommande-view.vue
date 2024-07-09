@@ -10,12 +10,12 @@
       </div>
       <div class="form-group">
         <select v-model="newCommande.article.nom" class="form-control" required>
-          <option disabled value="">Sélectionner un article</option>
+          <option disabled value="">Article A</option>
           <option v-for="article in articles" :key="article.id" :value="article.nom">{{ article.nom }}</option>
         </select>
       </div>
       <div class="form-group">
-        <input type="number" v-model="newCommande.commandeQuantite" class="form-control" placeholder="Quantité" required>
+        <input type="number" v-model="newCommande.commandeQuantite" class="form-control" placeholder="Quantité Commande" required>
       </div>
       <div class="form-group">
         <input type="number" v-model="newCommande.commandePrixtotal" class="form-control" placeholder="Prix total" required>
@@ -29,12 +29,12 @@
           <option value="LIVREE">Livrée</option>
           <option value="ANNULEE">Annulée</option>
         </select>
-
       </div>
       <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
   </div>
 </template>
+
 
 <script>
 import CommandeService from '@/services/CommandeService';
@@ -48,8 +48,8 @@ export default {
         client: { nom: '' },
         commandeDate: '',
         article: { nom: '' },
-        commandeQuantite: 0,
-        commandePrixtotal: 0,
+        commandeQuantite: '',
+        commandePrixtotal: '',
         commandeStatut: ''
       },
       articles: []
@@ -75,8 +75,8 @@ export default {
           client: { nom: '' },
           commandeDate: '',
           article: { nom: '' },
-          commandeQuantite: 0,
-          commandePrixtotal: 0,
+          commandeQuantite: '',
+          commandePrixtotal: '',
           commandeStatut: ''
         };
         this.$router.push({ name: 'ListCommande', params: { commandeId: response.data.commandeId } });
@@ -94,15 +94,15 @@ export default {
   max-width: 600px;
   margin: auto;
   padding: 20px;
-  background-color: #f0f0f0; 
+  background-color: #f0f0f0;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 
-  font-family: 'Roboto', sans-serif; 
-  color: #333; 
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif;
+  color: #333;
 }
 
 h2 {
-  color: #444; 
+  color: #444;
   text-align: center;
 }
 
@@ -124,7 +124,7 @@ select {
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;
-  color: #333; 
+  color: #333;
 }
 
 input[type="text"]:focus,
@@ -132,14 +132,14 @@ input[type="date"]:focus,
 input[type="number"]:focus,
 select:focus {
   outline: none;
-  border-color: #555; 
+  border-color: #555;
 }
 
 button {
   align-self: flex-end;
   padding: 10px 50px;
-  background-color: #007bff; 
-  color: #fff; 
+  background-color: #007bff;
+  color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -147,6 +147,6 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3; 
+  background-color: #0056b3;
 }
 </style>

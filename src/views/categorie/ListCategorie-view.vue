@@ -2,6 +2,11 @@
   <div class="categorie-list">
     <h2>Liste des Catégories d'Articles</h2>
 
+    <!-- Champ de recherche -->
+    <div class="search-container">
+      <input type="text" v-model="searchText" placeholder="Rechercher une catégorie..." class="form-control" />
+    </div>
+
     <!-- Tableau des catégories -->
     <div class="table-responsive">
       <table class="table table-striped table-bordered">
@@ -13,10 +18,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-if="categories.length === 0">
+          <tr v-if="filteredCategories.length === 0">
             <td colspan="3" style="text-align: center;">Aucune catégorie disponible.</td>
           </tr>
-          <tr v-else v-for="categorie in categories" :key="categorie.categorieId">
+          <tr v-for="categorie in filteredCategories" :key="categorie.categorieId">
             <td v-if="!categorie.editing">{{ categorie.categorieNom }}</td>
             <td v-else><input v-model="categorie.categorieNom" /></td>
 
@@ -52,11 +57,19 @@ export default {
   name: 'ListCategorie',
   data() {
     return {
-      categories: []
+      categories: [],
+      searchText: ''
     };
   },
   created() {
     this.fetchCategories();
+  },
+  computed: {
+    filteredCategories() {
+      return this.categories.filter(categorie => {
+        return categorie.categorieNom.toLowerCase().includes(this.searchText.toLowerCase());
+      });
+    }
   },
   methods: {
     async fetchCategories() {
@@ -173,5 +186,10 @@ h2 {
 
 .btn-secondary:hover {
   background-color: rgb(38, 39, 39);
+}
+
+.search-container {
+  margin-bottom: 20px;
+  text-align: right;
 }
 </style>
